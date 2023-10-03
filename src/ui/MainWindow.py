@@ -5,6 +5,8 @@ import pandas as pd
 import folium
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton
 from PyQt5.QtWebEngineWidgets import QWebEngineView  # pip install PyQtWebEngine
+from src.data.FileReader import FileReader
+
 
 class MainWindow(QWidget):
     def create_map(self, points):
@@ -52,8 +54,7 @@ class MainWindow(QWidget):
 
         layout.addWidget(button1)
 
-        self.points = [Point(53.13013312030104, 23.159393296340824), Point(53.1060760891934, 23.185881011562742),
-                       Point(53.105700348436585, 23.1489064504242)]
+        self.points = FileReader.read_points('src/data/data.txt')
         self.m = self.create_map(self.points)
         data = io.BytesIO()
         self.m.save(data, close_file=False)
