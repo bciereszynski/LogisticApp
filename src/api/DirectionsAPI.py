@@ -1,5 +1,5 @@
 import requests
-
+import time
 '''
 Proxy class to operate api calls, in case of api change make code changes only here
 '''
@@ -18,6 +18,9 @@ class DirectionsAPI:
 
     def get_path_coordinates(self, point1, point2):
         response = self.__get_response(point1, point2)
+        if response.status_code == 429:
+            time.sleep(1.1)
+            response = self.__get_response(point1, point2)
         mls = response.json()['route']['geometry']['coordinates']
         coordinates = [(i[0], i[1]) for i in mls]
         return coordinates
