@@ -1,9 +1,10 @@
 from src.common.Point import Point
 from src.api.DirectionsAPI import DirectionsAPI
+from src.api.MatrixAPI import MatrixAPI
 import io
 import pandas as pd
 import folium
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QMessageBox
 from PyQt5.QtWebEngineWidgets import QWebEngineView  # pip install PyQtWebEngine
 from src.data.FileReader import FileReader
 
@@ -26,6 +27,13 @@ class MainWindow(QWidget):
 
     def update_map(self):
         dirApi = DirectionsAPI()
+
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText('This action may take a while')
+        msg.setWindowTitle("Wait...")
+        msg.exec_()
+
         for i in range(len(self.points) - 1):
             point1 = self.points[i]
             point2 = self.points[i+1]
@@ -38,6 +46,17 @@ class MainWindow(QWidget):
         self.m.save(data, close_file=False)
         self.webView.setHtml(data.getvalue().decode())
 
+    def generate_distances(self):
+        matrixApi = MatrixAPI()
+        try:
+            distances_map = matrixApi.get_distances_map(self.points)
+        except:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText("Error")
+            msg.setInformativeText('Api error')
+            msg.setWindowTitle("Error")
+            msg.exec_()
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Folium in PyQt Example')
@@ -47,12 +66,18 @@ class MainWindow(QWidget):
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        button1 = QPushButton()
-        button1.setText("Generate")
-        button1.move(64, 32)
-        button1.clicked.connect(self.update_map)
+        updateBtn = QPushButton()
+        updateBtn.setText("Update")
+        updateBtn.move(64, 32)
+        updateBtn.clicked.connect(self.update_map)
 
-        layout.addWidget(button1)
+        generateBtn = QPushButton()
+        generateBtn.setText("Generate")
+        generateBtn.move(64, 32)
+        generateBtn.clicked.connect(self.generate_distances)
+
+        layout.addWidget(updateBtn)
+        layout.addWidget(generateBtn)
 
         self.points = FileReader.read_points('src/data/data.txt')
         self.m = self.create_map(self.points)

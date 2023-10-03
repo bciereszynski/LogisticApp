@@ -4,16 +4,19 @@ import time
 Proxy class to operate api calls, in case of api change make code changes only here
 '''
 class DirectionsAPI:
+    def __init__(self):
+        self.url = "https://trueway-directions2.p.rapidapi.com/FindDrivingRoute"
+        self.key = "6daf7a1653msh163f00b78136335p13cdfajsn22dd609d0a86"
+        self.host = 'trueway-directions2.p.rapidapi.com'
     def __get_response(self, point1, point2, mode='drive'):
-        url = "https://trueway-directions2.p.rapidapi.com/FindDrivingRoute"
         headers = {
-            "X-RapidAPI-Key": "6daf7a1653msh163f00b78136335p13cdfajsn22dd609d0a86",
-            "X-RapidAPI-Host": "trueway-directions2.p.rapidapi.com"
+            "X-RapidAPI-Key": self.key,
+            "X-RapidAPI-Host": self.host
         }
         querystring = {
             "stops": f"{str(point1)};{str(point2)}"}
         response = requests.request(
-            "GET", url, headers=headers, params=querystring)
+            "GET", self.url, headers=headers, params=querystring)
         return response
 
     def get_path_coordinates(self, point1, point2):
