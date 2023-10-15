@@ -28,4 +28,4 @@ class Point:
                      * self.__kilometersPerDegree, 3)
 
     def __str__(self):
-        return "%s,%s" % (self.longitude, self.latitude)
+        return self.name
