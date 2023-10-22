@@ -1,4 +1,6 @@
 import io
+import random
+
 import folium
 import pandas as pd
 
@@ -15,37 +17,44 @@ class MapWidget(QWidget):
         self.setLayout(lay)
 
         self.points = points
+        self.routes = None
 
         self.m = None
         self.__create(self.points)
 
         data = io.BytesIO()
         self.m.save(data, close_file=False)
-        print(data.getvalue())
         self.webView = QWebEngineView()
         self.webView.setHtml(data.getvalue().decode())
         lay.addWidget(self.webView)
 
-    def update(self):
+    def drawRoute(self, route):
         dirApi = DirectionsAPI()
 
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Information)
-        msg.setText('This action may take a while')
-        msg.setWindowTitle("Wait...")
-        msg.exec_()
+        color = "#" + ''.join([random.choice('0123456789ABCDEF') for j in range(6)])
 
-        for i in range(len(self.points) - 1):
-            point1 = self.points[i]
-            point2 = self.points[i+1]
+        for i in range(len(route.points) - 1):
+            point1 = route.points[i]
+            point2 = route.points[i + 1]
             coordinates = dirApi.get_path_coordinates(point1, point2)
-            folium.PolyLine(coordinates, color="red", weight=5,
+            folium.PolyLine(coordinates, color=color, weight=random.randint(1, 9),
                             opacity=1).add_to(self.m)
 
         # save map data to data object
         data = io.BytesIO()
         self.m.save(data, close_file=False)
         self.webView.setHtml(data.getvalue().decode())
+
+    def update(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText('This action may take a while')
+        msg.setWindowTitle("Wait...")
+        msg.exec_()
+
+        for r in self.routes:
+            self.drawRoute(r)
+
 
     def __create(self, points):
         self.m = folium.Map()

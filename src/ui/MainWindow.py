@@ -2,6 +2,7 @@ from src.api.MatrixAPI import MatrixAPI
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QMessageBox, QHBoxLayout
 
+from src.calc.main import generateRoutes
 from src.data.FileReader import FileReader
 from src.ui.MapWidget import MapWidget
 from src.ui.PointsMenu import PointsMenu
@@ -30,19 +31,23 @@ class MainWindow(QWidget):
         lay = QHBoxLayout()
         self.setLayout(lay)
 
-        updateBtn = QPushButton()
-        updateBtn.setText("Update")
-        #updateBtn.clicked.connect(self.update_map)
-
-        generateBtn = QPushButton()
-        generateBtn.setText("Generate")
-        #generateBtn.clicked.connect(self.generate_distances)
-
-        #lay.addWidget(updateBtn)
-        #lay.addWidget(generateBtn)
-
         points = FileReader.read_points('src/data/data.txt')
         mapWidget = MapWidget(points)
         lay.addWidget(mapWidget, stretch=1)
         pointsMenu = PointsMenu(points)
         lay.addWidget(pointsMenu, stretch=0)
+
+        updateBtn = QPushButton()
+        updateBtn.setText("Update")
+        updateBtn.clicked.connect(mapWidget.update)
+
+        generateBtn = QPushButton()
+        generateBtn.setText("Generate")
+        # generateBtn.clicked.connect(self.generate_distances)
+
+        lay.addWidget(updateBtn)
+        # lay.addWidget(generateBtn)
+
+        routes = generateRoutes(points, 15, 15.23)
+
+        mapWidget.routes = routes

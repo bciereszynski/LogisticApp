@@ -22,9 +22,13 @@ def generateRoutes(points: list[Point], pop_size, t_max):
                 last = rand_point
             points_to_delegate.remove(rand_point)
 
+    for r in routes:
+        r.optimize()
+
     return routes
 
 
+'''
 points: list[Point] = FileReader.read_points('src/data/data.txt')
 routes = generateRoutes(points,15,15.23)
 
@@ -40,3 +44,4 @@ for r in routes:
     longitude, latitude = r.get_plot_data()
     plt.plot(longitude, latitude, '-o')
 plt.show()
+'''
