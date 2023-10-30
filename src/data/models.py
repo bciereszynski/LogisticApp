@@ -9,7 +9,7 @@ class Points(Base):
     __tablename__ = "Points"
 
     ID = Column(Uuid, primary_key=True)
-    Longitude = Column(Numeric)
-    Latitude = Column(Numeric)
+    Longitude = Column(Numeric(15, 10))
+    Latitude = Column(Numeric(15, 10))
     Value = Column(Integer)
     Name = Column(String(50))
