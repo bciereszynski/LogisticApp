@@ -67,8 +67,10 @@ class MapWidget(QWidget):
         # create optimal zoom
         df = pd.DataFrame([(point.get_longitude(), point.get_latitude()) for point in points])
         sw = df.min().values.tolist()
-        sw = [sw[0] - 0.0005, sw[1] - 0.0005]
+        if len(sw) > 0:
+            sw = [sw[0] - 0.0005, sw[1] - 0.0005]
         ne = df.max().values.tolist()
-        ne = [ne[0] + 0.0005, ne[1] + 0.0005]
+        if len(ne) > 0:
+            ne = [ne[0] + 0.0005, ne[1] + 0.0005]
 
         self.m.fit_bounds([sw, ne])
