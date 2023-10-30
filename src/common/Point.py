@@ -1,8 +1,10 @@
 import math
 import uuid
 
+from src.common.Item import Item
 
-class Point:
+
+class Point(Item):
     __kilometersPerDegree = 73  # For Poland ... 111 for equator
 
     def __init__(self, longitude: float, latitude: float, value: int, name: str, Id: uuid = uuid.uuid4()):
@@ -32,3 +34,6 @@ class Point:
 
     def __str__(self):
         return "%s,%s" % (self.longitude, self.latitude)
+
+    def getValues(self):
+        return [self.longitude, self.latitude, self.value, self.name, self.id]

@@ -4,8 +4,11 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QMessageBox, QHBo
 
 from src.calc.main import generateRoutes
 from src.data.FileReader import FileReader
+from src.data.PointsRepository import PointsRepository
 from src.ui.ItemsMenu import ItemsMenu
 from src.ui.MapWidget import MapWidget
+from src.ui.PointDialog import PointDialog
+
 
 class MainWindow(QWidget):
 
@@ -33,7 +36,11 @@ class MainWindow(QWidget):
         points = FileReader.read_points('src/data/data.txt')
         mapWidget = MapWidget(points)
         lay.addWidget(mapWidget, stretch=1)
-        pointsMenu = ItemsMenu(None)
+
+        self.pointsRepository = PointsRepository()
+        pointDialog = PointDialog()
+
+        pointsMenu = ItemsMenu(self.pointsRepository, pointDialog)
         lay.addWidget(pointsMenu, stretch=0)
 
         updateBtn = QPushButton()
