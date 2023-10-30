@@ -1,6 +1,8 @@
+import uuid
+
 from src.api.MatrixAPI import MatrixAPI
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QMessageBox, QHBoxLayout
+from PyQt5.QtWidgets import QPushButton, QMessageBox, QHBoxLayout, QAction, QFileDialog, QMainWindow, QWidget
 
 from src.calc.main import generateRoutes
 from src.data.FileReader import FileReader
@@ -10,7 +12,7 @@ from src.ui.MapWidget import MapWidget
 from src.ui.PointDialog import PointDialog
 
 
-class MainWindow(QWidget):
+class MainWindow(QMainWindow):
 
     def generate_distances(self):
         matrixApi = MatrixAPI()
@@ -31,17 +33,20 @@ class MainWindow(QWidget):
         self.setMinimumSize(self.window_width, self.window_height)
 
         lay = QHBoxLayout()
-        self.setLayout(lay)
+        widget = QWidget()
+        widget.setLayout(lay)
+        self.setCentralWidget(widget)
+        self.createActions()
+        self.createMenu()
 
-        points = FileReader.read_points('src/data/data.txt')
-        mapWidget = MapWidget(points)
+        mapWidget = MapWidget([])
         lay.addWidget(mapWidget, stretch=1)
 
         self.pointsRepository = PointsRepository()
         pointDialog = PointDialog()
 
-        pointsMenu = ItemsMenu(self.pointsRepository, pointDialog)
-        lay.addWidget(pointsMenu, stretch=0)
+        self.pointsMenu = ItemsMenu(self.pointsRepository, pointDialog)
+        lay.addWidget(self.pointsMenu, stretch=0)
 
         updateBtn = QPushButton()
         updateBtn.setText("Update")
@@ -54,6 +59,38 @@ class MainWindow(QWidget):
         lay.addWidget(updateBtn)
         # lay.addWidget(generateBtn)
 
-        routes = generateRoutes(points, 15, 15.23)
+        #routes = generateRoutes([], 15, 15.23)
 
-        mapWidget.routes = routes
+        #mapWidget.routes = routes
+
+
+    def createActions(self):
+        act = QAction("Load points from file", self)
+        act.triggered.connect(self.loadPointsFromFile)
+        self.loadPointsFromFileAct = act
+
+    def createMenu(self):
+        dataMenu = self.menuBar().addMenu("Data")
+        dataMenu.addAction(self.loadPointsFromFileAct)
+
+    def loadPointsFromFile(self):
+        fileName = QFileDialog.getOpenFileName(self)
+        if not fileName[0]:
+            return
+
+        try:
+            points = FileReader.read_points(fileName[0])
+        except:
+            messageBox = QMessageBox()
+            messageBox.setText("Error occurred")
+            messageBox.setInformativeText("during file import")
+            messageBox.setIcon(QMessageBox.Warning)
+            messageBox.setWindowTitle("Error")
+            messageBox.exec()
+            return
+
+        for point in points:
+            point.id = uuid.uuid3(point.id, point.name)
+            self.pointsRepository.Add(point)
+
+        self.pointsMenu.updateItems()
