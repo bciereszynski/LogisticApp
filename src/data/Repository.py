@@ -1,28 +1,28 @@
 from sqlalchemy import create_engine, String, Column, Integer
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
+from abc import ABC, abstractmethod
 
-engine = create_engine("mariadb+pymysql://root:@localhost:3306/logisticdb")
-factory = sessionmaker(bind=engine)
-session = factory()
+class Repository(ABC):
+    Engine = create_engine("mariadb+pymysql://root:@localhost:3306/logisticdb")
+    SessionFactory = sessionmaker(bind=Engine)
 
-# insert
-# new_rec = Employees(Name="xd", Age="xd")
-# session.add(new_rec)
-# session.commit()
+    @abstractmethod
+    def GetById(self, identifier):
+        pass
 
-# read
-# for instance in session.query(Employees):
-#     print("Name: ", instance.Name)
-#     print("Age: ", instance.Age)
-#     print("---------")
+    @abstractmethod
+    def List(self):
+        pass
 
-# update
-# updated_rec = session.query(Orders).filter_by(SOME_ID_COLUMN="SOME_ID_VALUE").first()
-# updated_rec.ShipCountry = "USA"
-# session.commit()
-#
-# delete
-# deleted_rec = session.query(Orders).filter_by(SOME_ID_COLUMN="SOME_ID_VALUE").first()
-# session.delete(deleted_rec)
-# session.commit()
+    @abstractmethod
+    def Add(self, item):
+        pass
+
+    @abstractmethod
+    def Delete(self, item):
+        pass
+
+    @abstractmethod
+    def Edit(self, item):
+        pass

@@ -1,18 +1,15 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Uuid, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 metadata = Base.metadata
 
 
-class Employees(Base):
-    __tablename__ = "Employees"
+class Points(Base):
+    __tablename__ = "Points"
 
-    Name = Column(String(50), primary_key=True)
-    Age = Column(Integer)
-
-class Employers(Base):
-    __tablename__ = "Employers"
-
-    Name = Column(String(50), primary_key=True)
-    Age = Column(Integer)
+    ID = Column(Uuid, primary_key=True)
+    Longitude = Column(Numeric)
+    Latitude = Column(Numeric)
+    Value = Column(Integer)
+    Name = Column(String(50))

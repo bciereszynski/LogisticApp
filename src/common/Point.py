@@ -1,9 +1,12 @@
 import math
+import uuid
+
 
 class Point:
     __kilometersPerDegree = 73  # For Poland ... 111 for equator
 
-    def __init__(self, longitude: float, latitude: float, value: int, name: str):
+    def __init__(self, longitude: float, latitude: float, value: int, name: str, Id: uuid = uuid.uuid4()):
+        self.id = Id
         self.longitude = longitude
         self.latitude = latitude
         self.value = value

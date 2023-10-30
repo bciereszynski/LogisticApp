@@ -4,9 +4,8 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QMessageBox, QHBo
 
 from src.calc.main import generateRoutes
 from src.data.FileReader import FileReader
+from src.ui.ItemsMenu import ItemsMenu
 from src.ui.MapWidget import MapWidget
-from src.ui.PointsMenu import PointsMenu
-
 
 class MainWindow(QWidget):
 
@@ -34,7 +33,7 @@ class MainWindow(QWidget):
         points = FileReader.read_points('src/data/data.txt')
         mapWidget = MapWidget(points)
         lay.addWidget(mapWidget, stretch=1)
-        pointsMenu = PointsMenu(points)
+        pointsMenu = ItemsMenu(None)
         lay.addWidget(pointsMenu, stretch=0)
 
         updateBtn = QPushButton()
