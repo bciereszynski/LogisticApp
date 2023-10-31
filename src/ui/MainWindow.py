@@ -1,11 +1,12 @@
+import random
 import uuid
 
 from src.api.MatrixAPI import MatrixAPI
 
 from PyQt5.QtWidgets import QPushButton, QMessageBox, QHBoxLayout, QAction, QFileDialog, QMainWindow, QWidget
 
-from src.calc.main import generateRoutes
 from src.common.Point import Point
+from src.common.Route import Route
 from src.data.FileReader import FileReader
 from src.data.ItemsList import ItemsList
 from src.data.PointsRepository import PointsRepository
@@ -16,17 +17,45 @@ from src.ui.PointDialog import PointDialog
 
 class MainWindow(QMainWindow):
 
-    def generate_distances(self):
+    def generate(self):
+        points = self.pointsList.getItems()
         matrixApi = MatrixAPI()
-        try:
-            distances_map = matrixApi.get_distances_map(self.points)
-        except:
-            msg = QMessageBox()
-            msg.setIcon(QMessageBox.Critical)
-            msg.setText("Error")
-            msg.setInformativeText('Api error')
-            msg.setWindowTitle("Error")
-            msg.exec_()
+        distances_map = matrixApi.get_distances_map(points)
+        # try:
+        #     distances_map = matrixApi.get_distances_map(self.points)
+        # # except:
+        # #     msg = QMessageBox()
+        # #     msg.setIcon(QMessageBox.Critical)
+        # #     msg.setText("Error")
+        # #     msg.setInformativeText('Api error')
+        # #     msg.setWindowTitle("Error")
+        # #     msg.exec_()
+        # #     return
+
+        pop_size = 5
+        t_max = 10230
+        central: Point = points[0]
+        routes = []
+
+        for i in range(pop_size):
+            points_to_delegate = points.copy()
+            routes.append(Route(central))
+            points_to_delegate.remove(central)
+            last = central
+            cost = 0
+            while len(points_to_delegate) > 0:
+                rand_point = points_to_delegate[random.randint(0, len(points_to_delegate) - 1)]
+                if cost + distances_map[(rand_point, last)] + distances_map[(rand_point, central)] < t_max:
+                    routes[i].add(rand_point)
+                    cost = cost + rand_point.calc_line_distance(last)
+                    last = rand_point
+                points_to_delegate.remove(rand_point)
+
+        for r in routes:
+            r.optimize()
+
+        self.mapWidget.routes = routes
+        self.mapWidget.update()
 
     def __init__(self):
         super().__init__()
@@ -48,23 +77,14 @@ class MainWindow(QMainWindow):
         self.pointsMenu = ItemsMenu(self.pointsList, PointDialog())
         self.pointsList.fetch()
 
-
-        updateBtn = QPushButton()
-        updateBtn.setText("Update")
-        updateBtn.clicked.connect(self.mapWidget.update)
-
         generateBtn = QPushButton()
         generateBtn.setText("Generate")
-        # generateBtn.clicked.connect(self.generate_distances)
+        generateBtn.clicked.connect(self.generate)
 
         lay.addWidget(self.mapWidget, stretch=1)
         lay.addWidget(self.pointsMenu, stretch=0)
-        lay.addWidget(updateBtn)
-        # lay.addWidget(generateBtn)
+        lay.addWidget(generateBtn)
 
-        #routes = generateRoutes([], 15, 15.23)
-
-        #mapWidget.routes = routes
 
 
     def createActions(self):
