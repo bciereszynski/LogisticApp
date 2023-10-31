@@ -34,8 +34,8 @@ class MainWindow(QMainWindow):
         self.window_width, self.window_height = 1200, 1000
         self.setMinimumSize(self.window_width, self.window_height)
 
-        self.pointsRepository = PointsRepository()
-        pointsList = ItemsList(self.pointsRepository, Point)
+        pointsRepository = PointsRepository()
+        self.pointsList = ItemsList(pointsRepository, Point)
 
         lay = QHBoxLayout()
         widget = QWidget()
@@ -44,9 +44,9 @@ class MainWindow(QMainWindow):
         self.createActions()
         self.createMenu()
 
-        self.mapWidget = MapWidget(pointsList)
-        self.pointsMenu = ItemsMenu(pointsList, PointDialog())
-        pointsList.fetch()
+        self.mapWidget = MapWidget(self.pointsList)
+        self.pointsMenu = ItemsMenu(self.pointsList, PointDialog())
+        self.pointsList.fetch()
 
 
         updateBtn = QPushButton()
@@ -94,6 +94,4 @@ class MainWindow(QMainWindow):
 
         for point in points:
             point.id = uuid.uuid3(point.id, point.name)
-            self.pointsRepository.Add(point)
-
-        self.pointsMenu.updateItems()
+            self.pointsList.append(point)
