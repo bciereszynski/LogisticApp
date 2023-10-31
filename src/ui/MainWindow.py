@@ -5,7 +5,9 @@ from src.api.MatrixAPI import MatrixAPI
 from PyQt5.QtWidgets import QPushButton, QMessageBox, QHBoxLayout, QAction, QFileDialog, QMainWindow, QWidget
 
 from src.calc.main import generateRoutes
+from src.common.Point import Point
 from src.data.FileReader import FileReader
+from src.data.ItemsList import ItemsList
 from src.data.PointsRepository import PointsRepository
 from src.ui.ItemsMenu import ItemsMenu
 from src.ui.MapWidget import MapWidget
@@ -32,6 +34,9 @@ class MainWindow(QMainWindow):
         self.window_width, self.window_height = 1200, 1000
         self.setMinimumSize(self.window_width, self.window_height)
 
+        self.pointsRepository = PointsRepository()
+        pointsList = ItemsList(self.pointsRepository, Point)
+
         lay = QHBoxLayout()
         widget = QWidget()
         widget.setLayout(lay)
@@ -39,23 +44,21 @@ class MainWindow(QMainWindow):
         self.createActions()
         self.createMenu()
 
-        mapWidget = MapWidget([])
-        lay.addWidget(mapWidget, stretch=1)
+        self.mapWidget = MapWidget(pointsList)
+        self.pointsMenu = ItemsMenu(pointsList, PointDialog())
+        pointsList.fetch()
 
-        self.pointsRepository = PointsRepository()
-        pointDialog = PointDialog()
-
-        self.pointsMenu = ItemsMenu(self.pointsRepository, pointDialog)
-        lay.addWidget(self.pointsMenu, stretch=0)
 
         updateBtn = QPushButton()
         updateBtn.setText("Update")
-        updateBtn.clicked.connect(mapWidget.update)
+        updateBtn.clicked.connect(self.mapWidget.update)
 
         generateBtn = QPushButton()
         generateBtn.setText("Generate")
         # generateBtn.clicked.connect(self.generate_distances)
 
+        lay.addWidget(self.mapWidget, stretch=1)
+        lay.addWidget(self.pointsMenu, stretch=0)
         lay.addWidget(updateBtn)
         # lay.addWidget(generateBtn)
 

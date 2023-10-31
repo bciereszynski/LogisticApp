@@ -2,16 +2,16 @@ from PyQt5.QtWidgets import QListWidget, QVBoxLayout, QWidget, QPushButton, QDia
 
 
 class ItemsMenu(QWidget):
-    def __init__(self, repository, itemDialog, parent=None):
+    def __init__(self, itemsList, itemDialog, parent=None):
         super().__init__(parent)
         self.lay = QVBoxLayout()
         self.setLayout(self.lay)
 
-        self.repository = repository
         self.itemDialog = itemDialog
-        self.items = None
+        self.itemsList = itemsList
+        self.itemsList.listChanged.connect(self.updateItems)
 
-        self.itemsList = QListWidget()
+        self.itemsWidget = QListWidget()
         self.updateItems()
 
         self.addBtn = QPushButton()
@@ -20,20 +20,19 @@ class ItemsMenu(QWidget):
         self.deleteBtn = QPushButton()
         self.deleteBtn.setText("Delete")
 
-        self.lay.addWidget(self.itemsList)
+        self.lay.addWidget(self.itemsWidget)
         self.lay.addWidget(self.addBtn)
         self.lay.addWidget(self.deleteBtn)
 
-        self.itemsList.itemDoubleClicked.connect(self.editCommand)
+        self.itemsWidget.itemDoubleClicked.connect(self.editCommand)
         self.addBtn.clicked.connect(self.addBtnCommand)
         self.deleteBtn.clicked.connect(self.deleteBtnCommand)
 
     def updateItems(self):
-        self.items = self.repository.List()
-
-        names = [str(item) for item in self.items]
-        self.itemsList.clear()
-        self.itemsList.addItems(names)
+        names = [str(item) for item in self.itemsList.getItems()]
+        self.itemsWidget.clear()
+        self.itemsWidget.addItems(names)
+        self.update()
 
     def addBtnCommand(self):
         self.itemDialog.setWindowTitle("Add")
@@ -44,26 +43,20 @@ class ItemsMenu(QWidget):
             return
 
         item = self.itemDialog.getItem()
-        self.repository.Add(item)
-        self.items.append(item)
-        self.itemsList.addItem(item)
+        self.itemsList.append(item)
 
     def deleteBtnCommand(self):
-        itemToDeleteRow = self.itemsList.selectedIndexes()[0].row()
-        self.repository.Delete(self.items[itemToDeleteRow])
-        self.items.remove(self.items[itemToDeleteRow])
-        self.itemsList.takeItem(itemToDeleteRow)
+        itemToDeleteRow = self.itemsWidget.selectedIndexes()[0].row()
+        self.itemsList.remove(self.itemsList.getItem(itemToDeleteRow))
 
     def editCommand(self):
-        itemToEditRow = self.itemsList.selectedIndexes()[0].row()
+        itemToEditRow = self.itemsWidget.selectedIndexes()[0].row()
         self.itemDialog.setWindowTitle("Edit")
-        self.itemDialog.setValues(self.items[itemToEditRow].getValues())
+        self.itemDialog.setValues(self.itemsList.getItem(itemToEditRow).getValues())
         self.itemDialog.exec_()
 
         if self.itemDialog.result() == QDialog.Rejected:
             return
 
         item = self.itemDialog.getItem()
-        self.repository.Edit(item)
-        self.items[itemToEditRow] = item
-        self.itemsList.item(itemToEditRow).setText(str(item))
+        self.itemsList.update(itemToEditRow, item)

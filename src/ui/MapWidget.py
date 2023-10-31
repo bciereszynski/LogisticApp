@@ -11,22 +11,25 @@ from src.api.DirectionsAPI import DirectionsAPI
 
 
 class MapWidget(QWidget):
-    def __init__(self, points):
+    def __init__(self, pointsList):
         super().__init__()
         lay = QVBoxLayout()
         self.setLayout(lay)
 
-        self.points = points
+        self.pointsList = pointsList
         self.routes = None
+        self.map = None
 
-        self.m = None
-        self.__create(self.points)
+        self.pointsList.listChanged.connect(self.fetchPoints)
 
-        data = io.BytesIO()
-        self.m.save(data, close_file=False)
         self.webView = QWebEngineView()
-        self.webView.setHtml(data.getvalue().decode())
         lay.addWidget(self.webView)
+
+        self.__create(self.pointsList.getItems())
+
+    def fetchPoints(self):
+        points = self.pointsList.getItems()
+        self.__create(points)
 
     def drawRoute(self, route):
         dirApi = DirectionsAPI()
@@ -38,11 +41,11 @@ class MapWidget(QWidget):
             point2 = route.points[i + 1]
             coordinates = dirApi.get_path_coordinates(point1, point2)
             folium.PolyLine(coordinates, color=color, weight=random.randint(1, 9),
-                            opacity=1).add_to(self.m)
+                            opacity=1).add_to(self.map)
 
         # save map data to data object
         data = io.BytesIO()
-        self.m.save(data, close_file=False)
+        self.map.save(data, close_file=False)
         self.webView.setHtml(data.getvalue().decode())
 
     def update(self):
@@ -57,15 +60,20 @@ class MapWidget(QWidget):
 
 
     def __create(self, points):
-        self.m = folium.Map()
-        self.m.add_child(folium.LatLngPopup())
+        self.map = folium.Map()
+        self.map.add_child(folium.LatLngPopup())
 
-        # add markers
         for point in points:
-            folium.Marker((point.get_longitude(), point.get_latitude())).add_to(self.m)
+            folium.Marker((point.get_longitude(), point.get_latitude())).add_to(self.map)
 
-        # create optimal zoom
-        df = pd.DataFrame([(point.get_longitude(), point.get_latitude()) for point in points])
+        self.__scale(points)
+
+        data = io.BytesIO()
+        self.map.save(data, close_file=False)
+        self.webView.setHtml(data.getvalue().decode())
+
+    def __scale(self, points):
+        df = pd.DataFrame([(float(point.get_longitude()), float(point.get_latitude())) for point in points])
         sw = df.min().values.tolist()
         if len(sw) > 0:
             sw = [sw[0] - 0.0005, sw[1] - 0.0005]
@@ -73,4 +81,4 @@ class MapWidget(QWidget):
         if len(ne) > 0:
             ne = [ne[0] + 0.0005, ne[1] + 0.0005]
 
-        self.m.fit_bounds([sw, ne])
+        self.map.fit_bounds([sw, ne])
