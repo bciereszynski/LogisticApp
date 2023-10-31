@@ -58,7 +58,6 @@ class MapWidget(QWidget):
         for r in self.routes:
             self.drawRoute(r)
 
-
     def __create(self, points):
         self.map = folium.Map()
         self.map.add_child(folium.LatLngPopup())

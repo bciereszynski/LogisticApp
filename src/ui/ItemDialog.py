@@ -6,7 +6,7 @@ class ItemDialog(QDialog):
     def __init__(self, layout):
         super().__init__()
         self.setWindowModality(Qt.ApplicationModal)
-        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Save, Qt.Horizontal)
+        buttons = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Save, Qt.Horizontal)
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
