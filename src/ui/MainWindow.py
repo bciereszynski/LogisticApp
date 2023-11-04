@@ -5,11 +5,14 @@ from src.api.MatrixAPI import MatrixAPI
 
 from PyQt5.QtWidgets import QPushButton, QMessageBox, QHBoxLayout, QAction, QFileDialog, QMainWindow, QWidget
 
+from src.common.Courier import Courier
 from src.common.Point import Point
 from src.common.Route import Route
+from src.data.CourierRepository import CouriersRepository
 from src.data.FileReader import FileReader
 from src.data.ItemsList import ItemsList
 from src.data.PointsRepository import PointsRepository
+from src.ui.CourierDialog import CourierDialog
 from src.ui.ItemsMenu import ItemsMenu
 from src.ui.MapWidget import MapWidget
 from src.ui.PointDialog import PointDialog
@@ -65,6 +68,8 @@ class MainWindow(QMainWindow):
 
         pointsRepository = PointsRepository()
         self.pointsList = ItemsList(pointsRepository, Point)
+        couriersRepository = CouriersRepository()
+        self.couriersList = ItemsList(couriersRepository, Courier)
 
         lay = QHBoxLayout()
         widget = QWidget()
@@ -74,8 +79,12 @@ class MainWindow(QMainWindow):
         self.createMenu()
 
         self.mapWidget = MapWidget(self.pointsList)
+
         self.pointsMenu = ItemsMenu(self.pointsList, PointDialog())
         self.pointsList.fetch()
+
+        self.couriersMenu = ItemsMenu(self.couriersList, CourierDialog())
+        self.couriersList.fetch()
 
         generateBtn = QPushButton()
         generateBtn.setText("Generate")
@@ -83,6 +92,7 @@ class MainWindow(QMainWindow):
 
         lay.addWidget(self.mapWidget, stretch=1)
         lay.addWidget(self.pointsMenu, stretch=0)
+        lay.addWidget(self.couriersMenu, stretch=0)
         lay.addWidget(generateBtn)
 
 

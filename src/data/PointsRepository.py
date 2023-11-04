@@ -13,11 +13,11 @@ class PointsRepository(Repository):
     def List(self):
         session = Repository.SessionFactory()
         records = session.query(Points)
-        return [Point(rec.Longitude, rec.Latitude, rec.Value, rec.Name, rec.ID) for rec in records]
+        return [Point(rec.longitude, rec.latitude, rec.value, rec.name, rec.ID) for rec in records]
 
     def Add(self, item):
         session = Repository.SessionFactory()
-        newRecord = Points(ID=item.id, Longitude=item.longitude, Value=item.value, Latitude=item.latitude, Name=item.name)
+        newRecord = Points(ID=item.id, longitude=item.longitude, value=item.value, latitude=item.latitude, name=item.name)
         session.add(newRecord)
         session.commit()
 
@@ -30,8 +30,8 @@ class PointsRepository(Repository):
     def Edit(self, item):
         session = Repository.SessionFactory()
         updatedRecord = session.query(Points).filter_by(ID=item.id).first()
-        updatedRecord.Longitude = item.longitude
-        updatedRecord.Value = item.value
-        updatedRecord.Latitude = item.latitude
-        updatedRecord.Name = item.name
+        updatedRecord.longitude = item.longitude
+        updatedRecord.value = item.value
+        updatedRecord.latitude = item.latitude
+        updatedRecord.name = item.name
         session.commit()
