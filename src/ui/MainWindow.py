@@ -24,17 +24,16 @@ class MainWindow(QMainWindow):
     def generate(self):
         points = self.pointsList.getItems()
         matrixApi = MatrixAPI()
-        distances_map = matrixApi.get_distances_map(points)
-        # try:
-        #     distances_map = matrixApi.get_distances_map(self.points)
-        # # except:
-        # #     msg = QMessageBox()
-        # #     msg.setIcon(QMessageBox.Critical)
-        # #     msg.setText("Error")
-        # #     msg.setInformativeText('Api error')
-        # #     msg.setWindowTitle("Error")
-        # #     msg.exec_()
-        # #     return
+        try:
+            distances_map = matrixApi.get_distances_map(self.points)
+        except:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText("Error")
+            msg.setInformativeText('Api error')
+            msg.setWindowTitle("Error")
+            msg.exec_()
+            return
 
         couriers = self.couriersList.getItems()
         t_max = 10230

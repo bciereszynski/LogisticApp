@@ -20,7 +20,6 @@ class DirectionsAPI:
         return response
 
     def get_path_coordinates(self, point1, point2):
-        return None
         response = self.__get_response(point1, point2)
         if response.status_code == 429:
             time.sleep(1.1)
