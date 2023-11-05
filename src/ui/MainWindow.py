@@ -3,7 +3,8 @@ import uuid
 
 from src.api.MatrixAPI import MatrixAPI
 
-from PyQt5.QtWidgets import QPushButton, QMessageBox, QHBoxLayout, QAction, QFileDialog, QMainWindow, QWidget
+from PyQt5.QtWidgets import QPushButton, QMessageBox, QHBoxLayout, QAction, QFileDialog, QMainWindow, QWidget, \
+    QTabWidget
 
 from src.common.Courier import Courier
 from src.common.Point import Point
@@ -35,21 +36,23 @@ class MainWindow(QMainWindow):
         # #     msg.exec_()
         # #     return
 
-        pop_size = 5
+        couriers = self.couriersList.getItems()
         t_max = 10230
         central: Point = points[0]
         routes = []
 
-        for i in range(pop_size):
+        for i in range(len(couriers)):
             points_to_delegate = points.copy()
-            routes.append(Route(central))
+            route = Route(central)
+            route.courier = couriers[i]
+            routes.append(route)
             points_to_delegate.remove(central)
             last = central
             cost = 0
             while len(points_to_delegate) > 0:
                 rand_point = points_to_delegate[random.randint(0, len(points_to_delegate) - 1)]
                 if cost + distances_map[(rand_point, last)] + distances_map[(rand_point, central)] < t_max:
-                    routes[i].add(rand_point)
+                    route.add(rand_point)
                     cost = cost + rand_point.calc_line_distance(last)
                     last = rand_point
                 points_to_delegate.remove(rand_point)
@@ -90,9 +93,12 @@ class MainWindow(QMainWindow):
         generateBtn.setText("Generate")
         generateBtn.clicked.connect(self.generate)
 
+        tabsWidget = QTabWidget()
+        tabsWidget.addTab(self.pointsMenu, "Points")
+        tabsWidget.addTab(self.couriersMenu, "Couriers")
+
         lay.addWidget(self.mapWidget, stretch=1)
-        lay.addWidget(self.pointsMenu, stretch=0)
-        lay.addWidget(self.couriersMenu, stretch=0)
+        lay.addWidget(tabsWidget, stretch=0)
         lay.addWidget(generateBtn)
 
 

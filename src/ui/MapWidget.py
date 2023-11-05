@@ -34,13 +34,11 @@ class MapWidget(QWidget):
     def drawRoute(self, route):
         dirApi = DirectionsAPI()
 
-        color = "#" + ''.join([random.choice('0123456789ABCDEF') for j in range(6)])
-
         for i in range(len(route.points) - 1):
             point1 = route.points[i]
             point2 = route.points[i + 1]
             coordinates = dirApi.get_path_coordinates(point1, point2)
-            folium.PolyLine(coordinates, color=color, weight=random.randint(1, 9),
+            folium.PolyLine(coordinates, color=route.courier.color, weight=6, #random.randint(1, 9),
                             opacity=1).add_to(self.map)
 
         # save map data to data object

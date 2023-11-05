@@ -1,9 +1,11 @@
+from src.common.Courier import Courier
 from src.common.Point import Point
 
 
 class Route:
     def __init__(self, central: Point):
         self.points: list[Point] = [central]
+        self.courier: Courier = None
 
     def add(self, point: Point):
         self.points.append(point)
