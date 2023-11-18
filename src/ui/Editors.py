@@ -47,9 +47,12 @@ def AddPasswordEditor(layout, name):
     return label, line
 
 
-def AddIntegerEditor(layout, name):
+def AddIntegerEditor(layout, name, maximum=100, minimum=0):
     label = QLabel(name)
     spin = QSpinBox()
+
+    spin.setMaximum(maximum)
+    spin.setMinimum(minimum)
 
     layout.addWidget(label)
     layout.addWidget(spin)

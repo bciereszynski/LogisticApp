@@ -1,11 +1,15 @@
+import pickle
 import sys
 
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from src.common.AppConfig import AppConfig
+from AppConfig import AppConfig
 from src.data.Repository import Repository
-from ui.MainWindow import MainWindow
-from PyQt5.QtWidgets import QApplication
+from src.ui.ConfigWindow import ConfigWindow
+from PyQt5.QtWidgets import QApplication, QDialog
+
+from src.ui.MainWindow import MainWindow
 
 
 def initDatabase(config):
@@ -16,23 +20,34 @@ def initDatabase(config):
     Repository.SessionFactory = sessionmaker(bind=Repository.Engine)
 
 
+def readConfigFile():
+    try:
+        with open("config.cfg", "rb") as file:
+            config = pickle.load(file)
+            return config
+    except FileNotFoundError:
+        return AppConfig()
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyle('Breeze')
 
-    config = AppConfig()
-    config.setApiKey("6daf7a1653msh163f00b78136335p13cdfajsn22dd609d0a86")
+    config = readConfigFile()
+    window = None
 
-    config.databaseLogin = "root"
-    config.databasePassword = ""
-    config.databaseDriver = "mariadb+pymysql"
-    config.databaseAddress = "localhost"
-    config.databasePort = 3306
-    config.databaseName = "logisticdb"
+    while True:
+        try:
+            initDatabase(config)
+            window = MainWindow(config)
+            break
+        except (SQLAlchemyError, TypeError):
+            configWindow = ConfigWindow(config)
+            configWindow.exec()
 
-    initDatabase(config)
+        if configWindow.result() == QDialog.Rejected:
+            exit()
 
-    window = MainWindow(config)
     window.show()
 
     try:

@@ -4,7 +4,7 @@ import uuid
 from src.api.MatrixAPI import MatrixAPI
 
 from PyQt5.QtWidgets import QPushButton, QMessageBox, QHBoxLayout, QAction, QFileDialog, QMainWindow, QWidget, \
-    QTabWidget
+    QTabWidget, QVBoxLayout
 
 from src.common.Courier import Courier
 from src.common.Point import Point
@@ -13,6 +13,7 @@ from src.data.CourierRepository import CouriersRepository
 from src.data.FileReader import FileReader
 from src.data.ItemsList import ItemsList
 from src.data.PointsRepository import PointsRepository
+from src.ui.ConfigWindow import ConfigWindow
 from src.ui.CourierDialog import CourierDialog
 from src.ui.ItemsMenu import ItemsMenu
 from src.ui.MapWidget import MapWidget
@@ -25,12 +26,12 @@ class MainWindow(QMainWindow):
         points = self.pointsList.getItems()
         matrixApi = MatrixAPI(self.config)
         try:
-            distances_map = matrixApi.get_distances_map(self.points)
-        except:
+            distances_map = matrixApi.get_distances_map(points)
+        except Exception as ex:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
             msg.setText("Error")
-            msg.setInformativeText('Api error')
+            msg.setInformativeText(str(ex))
             msg.setWindowTitle("Error")
             msg.exec_()
             return
@@ -62,7 +63,7 @@ class MainWindow(QMainWindow):
         self.mapWidget.routes = routes
         self.mapWidget.update()
 
-    def __init__(self):
+    def __init__(self, config):
         super().__init__()
         self.setWindowTitle('Logistic App')
         self.window_width, self.window_height = 1200, 1000
@@ -80,7 +81,7 @@ class MainWindow(QMainWindow):
         widget.setLayout(lay)
         self.setCentralWidget(widget)
         self.createActions()
-        self.createMenu()
+        self.createMenus()
 
         self.mapWidget = MapWidget(self.pointsList, self.config)
 
@@ -100,18 +101,27 @@ class MainWindow(QMainWindow):
 
         lay.addWidget(self.mapWidget, stretch=1)
         lay.addWidget(tabsWidget, stretch=0)
-        lay.addWidget(generateBtn)
 
+        btnLay = QVBoxLayout()
+        btnLay.addWidget(generateBtn)
 
+        lay.addLayout(btnLay)
 
     def createActions(self):
         act = QAction("Load points from file", self)
         act.triggered.connect(self.loadPointsFromFile)
         self.loadPointsFromFileAct = act
 
-    def createMenu(self):
+        act = QAction("Edit", self)
+        act.triggered.connect(self.showConfigEditor)
+        self.editConfig = act
+
+    def createMenus(self):
         dataMenu = self.menuBar().addMenu("Data")
         dataMenu.addAction(self.loadPointsFromFileAct)
+
+        configMenu = self.menuBar().addMenu("Configuration")
+        configMenu.addAction(self.editConfig)
 
     def loadPointsFromFile(self):
         fileName = QFileDialog.getOpenFileName(self)
@@ -120,7 +130,7 @@ class MainWindow(QMainWindow):
 
         try:
             points = FileReader.read_points(fileName[0])
-        except:
+        except Exception:
             messageBox = QMessageBox()
             messageBox.setText("Error occurred")
             messageBox.setInformativeText("during file import")
@@ -132,3 +142,7 @@ class MainWindow(QMainWindow):
         for point in points:
             point.id = uuid.uuid3(point.id, point.name)
             self.pointsList.append(point)
+
+    def showConfigEditor(self):
+        configEditor = ConfigWindow(self.config)
+        configEditor.exec()
