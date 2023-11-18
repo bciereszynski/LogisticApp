@@ -1,5 +1,5 @@
 from PyQt5.QtGui import QPalette, QColor
-from PyQt5.QtWidgets import QLabel, QDoubleSpinBox, QLineEdit, QSpinBox, QPushButton, QColorDialog
+from PyQt5.QtWidgets import QLabel, QDoubleSpinBox, QLineEdit, QSpinBox, QPushButton, QColorDialog, QHBoxLayout
 
 
 def AddDecimalEditor(layout, name):
@@ -19,6 +19,30 @@ def AddStringEditor(layout, name):
 
     layout.addWidget(label)
     layout.addWidget(line)
+
+    return label, line
+
+
+def AddPasswordEditor(layout, name):
+    innerLay = QHBoxLayout()
+    label = QLabel(name)
+    line = QLineEdit()
+    btn = QPushButton("*")
+    btn.setFixedSize(20, 20)
+
+    def showPasswordCommand():
+        if line.echoMode() == QLineEdit.Password:
+            line.setEchoMode(QLineEdit.Normal)
+        else:
+            line.setEchoMode(QLineEdit.Password)
+
+    line.setEchoMode(QLineEdit.Password)
+    btn.clicked.connect(showPasswordCommand)
+
+    layout.addWidget(label)
+    innerLay.addWidget(line)
+    innerLay.addWidget(btn)
+    layout.addLayout(innerLay)
 
     return label, line
 
