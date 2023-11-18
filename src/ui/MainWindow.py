@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
 
     def generate(self):
         points = self.pointsList.getItems()
-        matrixApi = MatrixAPI()
+        matrixApi = MatrixAPI(self.config)
         try:
             distances_map = matrixApi.get_distances_map(self.points)
         except:
@@ -68,6 +68,8 @@ class MainWindow(QMainWindow):
         self.window_width, self.window_height = 1200, 1000
         self.setMinimumSize(self.window_width, self.window_height)
 
+        self.config = config
+
         pointsRepository = PointsRepository()
         self.pointsList = ItemsList(pointsRepository, Point)
         couriersRepository = CouriersRepository()
@@ -80,7 +82,7 @@ class MainWindow(QMainWindow):
         self.createActions()
         self.createMenu()
 
-        self.mapWidget = MapWidget(self.pointsList)
+        self.mapWidget = MapWidget(self.pointsList, self.config)
 
         self.pointsMenu = ItemsMenu(self.pointsList, PointDialog())
         self.pointsList.fetch()

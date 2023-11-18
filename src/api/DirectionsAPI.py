@@ -1,14 +1,20 @@
 import requests
 import time
+
+from AppConfig import AppConfig
+
 '''
 Proxy class to operate api calls, in case of api change make code changes only here
 '''
+
+
 class DirectionsAPI:
-    def __init__(self):
+    def __init__(self, config: AppConfig):
         self.url = "https://trueway-directions2.p.rapidapi.com/FindDrivingRoute"
-        self.key = "6daf7a1653msh163f00b78136335p13cdfajsn22dd609d0a86"
         self.host = 'trueway-directions2.p.rapidapi.com'
-    def __get_response(self, point1, point2, mode='drive'):
+        self.key = config.getApiKey()
+
+    def __get_response(self, point1, point2):
         headers = {
             "X-RapidAPI-Key": self.key,
             "X-RapidAPI-Host": self.host

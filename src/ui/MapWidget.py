@@ -1,5 +1,4 @@
 import io
-import random
 
 import folium
 import pandas as pd
@@ -8,11 +7,13 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QMessageBox
 
 from src.api.DirectionsAPI import DirectionsAPI
+from AppConfig import AppConfig
 
 
 class MapWidget(QWidget):
-    def __init__(self, pointsList):
+    def __init__(self, pointsList, config: AppConfig):
         super().__init__()
+        self.config = config
         lay = QVBoxLayout()
         self.setLayout(lay)
 
@@ -32,7 +33,7 @@ class MapWidget(QWidget):
         self.__create(points)
 
     def drawRoute(self, route):
-        dirApi = DirectionsAPI()
+        dirApi = DirectionsAPI(self.config)
 
         for i in range(len(route.points) - 1):
             point1 = route.points[i]

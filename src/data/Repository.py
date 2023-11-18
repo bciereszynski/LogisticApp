@@ -1,11 +1,8 @@
-from sqlalchemy import create_engine, String, Column, Integer
-import sqlalchemy
-from sqlalchemy.orm import sessionmaker
 from abc import ABC, abstractmethod
 
 class Repository(ABC):
-    Engine = create_engine("mariadb+pymysql://root:@localhost:3306/logisticdb")
-    SessionFactory = sessionmaker(bind=Engine)
+    Engine = None
+    SessionFactory = None
 
     @abstractmethod
     def GetById(self, identifier):
