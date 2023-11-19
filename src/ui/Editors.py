@@ -1,5 +1,7 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QColor
-from PyQt5.QtWidgets import QLabel, QDoubleSpinBox, QLineEdit, QSpinBox, QPushButton, QColorDialog, QHBoxLayout
+from PyQt5.QtWidgets import QLabel, QDoubleSpinBox, QLineEdit, QSpinBox, QPushButton, QColorDialog, QHBoxLayout, \
+    QCheckBox
 
 
 def AddDecimalEditor(layout, name):
@@ -58,6 +60,21 @@ def AddIntegerEditor(layout, name, maximum=100, minimum=0):
     layout.addWidget(spin)
 
     return label, spin
+
+
+def AddBooleanEditor(layout, name):
+    label = QLabel(name)
+    check = QCheckBox()
+
+    innerLay = QHBoxLayout()
+    innerLay.addWidget(label)
+    innerLay.addWidget(check)
+
+    innerLay.setAlignment(Qt.AlignLeft)
+
+    layout.addLayout(innerLay)
+
+    return label, check
 
 
 class ColorButton(QPushButton):

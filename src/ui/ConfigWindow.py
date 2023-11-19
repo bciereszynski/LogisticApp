@@ -18,14 +18,23 @@ class ConfigWindow(QDialog):
 
         lay = QHBoxLayout()
 
+        optionalLay = QVBoxLayout()
+
         apiLay = QVBoxLayout()
         self.apiCombo = QComboBox()
         self.apiCombo.addItem("RapidAPI")
         apiLay.addWidget(self.apiCombo)
         apiKeyLabel, self.apiKeyEditor = AddStringEditor(apiLay, "Api key")
         apiLay.setAlignment(Qt.AlignTop)
+        optionalLay.addLayout(apiLay)
 
-        lay.addLayout(apiLay)
+        mailLay = QVBoxLayout()
+        mailLoginLabel, self.mailLoginEditor = AddStringEditor(mailLay, "Mail login")
+        mailPasswordLabel, self.mailPasswordEditor = AddPasswordEditor(mailLay, "Password")
+        mailLay.setAlignment(Qt.AlignTop)
+        optionalLay.addLayout(mailLay)
+
+        lay.addLayout(optionalLay)
         lay.addSpacing(20)
 
         databaseLay = QVBoxLayout()
@@ -63,7 +72,9 @@ class ConfigWindow(QDialog):
             self.databasePortEditor.setValue(self.config.databasePort)
             self.databaseLoginEditor.setText(self.config.databaseLogin)
             self.databasePasswordEditor.setText(self.config.databasePassword)
-        except TypeError:
+            self.mailLoginEditor.setText(self.config.mailLogin)
+            self.mailPasswordEditor.setText(self.config.mailPassword)
+        except (TypeError, AttributeError):
             pass
 
     def save(self):
@@ -74,6 +85,8 @@ class ConfigWindow(QDialog):
         self.config.databasePort = self.databasePortEditor.value()
         self.config.databaseLogin = self.databaseLoginEditor.text()
         self.config.databasePassword = self.databasePasswordEditor.text()
+        self.config.mailLogin = self.mailLoginEditor.text()
+        self.config.mailPassword = self.mailPasswordEditor.text()
 
         self.writeFile()
 
