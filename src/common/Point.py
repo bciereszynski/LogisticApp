@@ -7,7 +7,9 @@ from src.common.Item import Item
 class Point(Item):
     __kilometersPerDegree = 73  # For Poland ... 111 for equator
 
-    def __init__(self, longitude: float, latitude: float, value: int, name: str, Id: uuid = uuid.uuid4()):
+    def __init__(self, longitude: float, latitude: float, value: int, name: str, Id: uuid = None):
+        if Id is None:
+            Id = uuid.uuid4()
         self.id = Id
         self.longitude = longitude
         self.latitude = latitude
