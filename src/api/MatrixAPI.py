@@ -1,6 +1,6 @@
 import requests
 
-from AppConfig import AppConfig
+from src.AppConfig import AppConfig
 
 '''
 Proxy class to operate api calls, in case of api change make code changes only here

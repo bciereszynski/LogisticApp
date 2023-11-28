@@ -1,5 +1,5 @@
 from src.common.Point import Point
-from src.data.Repository import Repository
+from src.data.repositories.Repository import Repository
 from src.data.models import Points
 
 

@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QVBoxLayout
 
 from src.common.Courier import Courier
 from src.ui.Editors import AddStringEditor, ColorButton
-from src.ui.ItemDialog import ItemDialog
+from src.ui.dialogs.ItemDialog import ItemDialog
 
 
 class CourierDialog(ItemDialog):

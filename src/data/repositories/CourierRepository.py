@@ -1,5 +1,5 @@
 from src.common.Courier import Courier
-from src.data.Repository import Repository
+from src.data.repositories.Repository import Repository
 from src.data.models import Couriers
 
 

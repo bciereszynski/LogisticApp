@@ -9,15 +9,15 @@ from PyQt5.QtWidgets import QPushButton, QMessageBox, QHBoxLayout, QAction, QFil
 from src.common.Courier import Courier
 from src.common.Point import Point
 from src.common.Route import Route
-from src.data.CourierRepository import CouriersRepository
+from src.data.repositories.CourierRepository import CouriersRepository
 from src.data.FileReader import FileReader
 from src.data.ItemsList import ItemsList
-from src.data.PointsRepository import PointsRepository
-from src.ui.ConfigWindow import ConfigWindow
-from src.ui.CourierDialog import CourierDialog
+from src.data.repositories.PointsRepository import PointsRepository
+from src.ui.dialogs.ConfigDialog import ConfigWindow
+from src.ui.dialogs.CourierDialog import CourierDialog
 from src.ui.ItemsMenu import ItemsMenu
 from src.ui.MapWidget import MapWidget
-from src.ui.PointDialog import PointDialog
+from src.ui.dialogs.PointDialog import PointDialog
 
 
 class MainWindow(QMainWindow):

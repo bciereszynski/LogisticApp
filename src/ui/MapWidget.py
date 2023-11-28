@@ -7,7 +7,7 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QMessageBox
 
 from src.api.DirectionsAPI import DirectionsAPI
-from AppConfig import AppConfig
+from src.AppConfig import AppConfig
 
 
 class MapWidget(QWidget):

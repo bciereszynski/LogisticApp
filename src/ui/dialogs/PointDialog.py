@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QVBoxLayout
 
 from src.common.Point import Point
 from src.ui.Editors import AddDecimalEditor, AddIntegerEditor, AddStringEditor
-from src.ui.ItemDialog import ItemDialog
+from src.ui.dialogs.ItemDialog import ItemDialog
 
 
 class PointDialog(ItemDialog):

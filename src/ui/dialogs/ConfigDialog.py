@@ -1,9 +1,9 @@
 import pickle
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QVBoxLayout, QLabel, QPushButton, QDialog, QComboBox, QHBoxLayout, QDialogButtonBox
+from PyQt5.QtWidgets import QVBoxLayout, QLabel, QDialog, QComboBox, QHBoxLayout, QDialogButtonBox
 
-from AppConfig import AppConfig
+from src.AppConfig import AppConfig
 from src.ui.Editors import AddStringEditor, AddPasswordEditor, AddIntegerEditor
 
 
