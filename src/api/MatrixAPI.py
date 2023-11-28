@@ -4,7 +4,6 @@ import requests
 
 from src.AppConfig import AppConfig
 from src.api.IApi import IApi
-from src.common.Point import Point
 
 '''
 Proxy class to operate api calls, in case of api change make code changes only here
@@ -57,4 +56,5 @@ class MatrixAPI(IApi):
             for j in range(len(points)):
                 distancesMap[(points[i], points[j])] = distancesMatrix[i][j]
 
+        self.requestsMap[points_coordinates] = distancesMap
         return distancesMap
