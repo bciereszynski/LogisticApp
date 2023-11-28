@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QLabel, QDoubleSpinBox, QLineEdit, QSpinBox, QPushBu
 def AddDecimalEditor(layout, name):
     label = QLabel(name)
     spin = QDoubleSpinBox()
-    spin.setDecimals(15)
+    spin.setDecimals(10)
 
     layout.addWidget(label)
     layout.addWidget(spin)

@@ -5,6 +5,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from src.AppConfig import AppConfig
+from src.api.DirectionsAPI import DirectionsAPI
+from src.api.MatrixAPI import MatrixAPI
 from src.data.repositories.Repository import Repository
 from src.ui.dialogs.ConfigDialog import ConfigWindow
 from PyQt5.QtWidgets import QApplication, QDialog
@@ -29,11 +31,31 @@ def readConfigFile():
         return AppConfig()
 
 
+def initCache():
+    try:
+        with open("directions_cache.dat", "rb") as file:
+            requestMap = pickle.load(file)
+            DirectionsAPI.requestsMap = requestMap
+        with open("matrix_cache.dat", "rb") as file:
+            requestMap = pickle.load(file)
+            MatrixAPI.requestsMap = requestMap
+    except FileNotFoundError:
+        pass
+
+
+def saveCache():
+    with open("directions_cache.dat", "wb") as outfile:
+        pickle.dump(DirectionsAPI.requestsMap, outfile)
+    with open("matrix_cache.dat", "wb") as outfile:
+        pickle.dump(MatrixAPI.requestsMap, outfile)
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyle('Breeze')
 
     config = readConfigFile()
+    initCache()
     window = None
 
     while True:
@@ -53,6 +75,7 @@ if __name__ == '__main__':
     try:
         sys.exit(app.exec_())
     except SystemExit:
+        saveCache()
         print('Closing Window...')
 
 

@@ -36,9 +36,8 @@ class MapWidget(QWidget):
         dirApi = DirectionsAPI(self.config)
 
         for i in range(len(route.points) - 1):
-            point1 = route.points[i]
-            point2 = route.points[i + 1]
-            coordinates = dirApi.get_path_coordinates(point1, point2)
+            requestPoints = (route.points[i], route.points[i + 1])
+            coordinates = dirApi.get_result(requestPoints)
             folium.PolyLine(coordinates, color=route.courier.color, weight=6, #random.randint(1, 9),
                             opacity=1).add_to(self.map)
 

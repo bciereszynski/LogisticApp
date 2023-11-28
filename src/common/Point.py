@@ -32,8 +32,11 @@ class Point(Item):
                                (point1.latitude - point2.latitude) * (point1.latitude - point2.latitude))
                      * self.__kilometersPerDegree, 3)
 
-    def __str__(self):
+    def get_coordinates_str(self):
         return "%s,%s" % (self.longitude, self.latitude)
+
+    def __str__(self):
+        return self.name
 
     def getValues(self):
         return [self.longitude, self.latitude, self.value, self.name, self.id]

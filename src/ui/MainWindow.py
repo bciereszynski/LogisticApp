@@ -26,7 +26,7 @@ class MainWindow(QMainWindow):
         points = self.pointsList.getItems()
         matrixApi = MatrixAPI(self.config)
         try:
-            distances_map = matrixApi.get_distances_map(points)
+            distances_map = matrixApi.get_result(points)
         except Exception as ex:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
