@@ -24,7 +24,7 @@ def initDatabase(config):
 
 def readConfigFile():
     try:
-        with open("config.cfg", "rb") as file:
+        with open("programData/config.cfg", "rb") as file:
             config = pickle.load(file)
             return config
     except FileNotFoundError:
@@ -33,10 +33,10 @@ def readConfigFile():
 
 def initCache():
     try:
-        with open("directions_cache.dat", "rb") as file:
+        with open("programData/directions_cache.dat", "rb") as file:
             requestMap = pickle.load(file)
             DirectionsAPI.requestsMap = requestMap
-        with open("matrix_cache.dat", "rb") as file:
+        with open("programData/matrix_cache.dat", "rb") as file:
             requestMap = pickle.load(file)
             MatrixAPI.requestsMap = requestMap
     except FileNotFoundError:
@@ -44,9 +44,9 @@ def initCache():
 
 
 def saveCache():
-    with open("directions_cache.dat", "wb") as outfile:
+    with open("programData/directions_cache.dat", "wb") as outfile:
         pickle.dump(DirectionsAPI.requestsMap, outfile)
-    with open("matrix_cache.dat", "wb") as outfile:
+    with open("programData/matrix_cache.dat", "wb") as outfile:
         pickle.dump(MatrixAPI.requestsMap, outfile)
 
 
