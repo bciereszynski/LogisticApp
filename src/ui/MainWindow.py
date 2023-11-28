@@ -90,6 +90,7 @@ class MainWindow(QMainWindow):
 
         self.couriersMenu = ItemsMenu(self.couriersList, CourierDialog())
         self.couriersList.fetch()
+        self.couriersMenu.itemSelectionChanged().connect(self.showCourierMap)
 
         generateBtn = QPushButton()
         generateBtn.setText("Generate")
@@ -106,6 +107,10 @@ class MainWindow(QMainWindow):
         btnLay.addWidget(generateBtn)
 
         lay.addLayout(btnLay)
+
+    def showCourierMap(self, selectedItem, unselectedItem):
+        index = self.couriersMenu.itemsWidget.row(selectedItem)
+        self.mapWidget.setMap(index)
 
     def createActions(self):
         act = QAction("Load points from file", self)

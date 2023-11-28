@@ -28,6 +28,14 @@ class ItemsMenu(QWidget):
         self.addBtn.clicked.connect(self.addBtnCommand)
         self.deleteBtn.clicked.connect(self.deleteBtnCommand)
 
+    def selectedIndex(self):
+        if len(self.itemsWidget.selectedIndexes()) == 0:
+            return None
+        return self.itemsWidget.selectedIndexes()[0]
+
+    def itemSelectionChanged(self):
+        return self.itemsWidget.currentItemChanged
+
     def updateItems(self):
         names = [str(item) for item in self.itemsList.getItems()]
         self.itemsWidget.clear()
@@ -46,6 +54,8 @@ class ItemsMenu(QWidget):
         self.itemsList.append(item)
 
     def deleteBtnCommand(self):
+        if len(self.itemsWidget.selectedIndexes()) == 0:
+            return
         itemToDeleteRow = self.itemsWidget.selectedIndexes()[0].row()
         self.itemsList.remove(self.itemsList.getItem(itemToDeleteRow))
 

@@ -14,8 +14,12 @@ class MapWidget(QWidget):
     def __init__(self, pointsList, config: AppConfig):
         super().__init__()
         self.config = config
+
         lay = QVBoxLayout()
         self.setLayout(lay)
+
+        self.webView = QWebEngineView()
+        lay.addWidget(self.webView)
 
         self.pointsList = pointsList
         self.routes = None
@@ -23,14 +27,20 @@ class MapWidget(QWidget):
 
         self.pointsList.listChanged.connect(self.fetchPoints)
 
-        self.webView = QWebEngineView()
-        lay.addWidget(self.webView)
+        self.createMap(self.pointsList.getItems())
+        self.defaultMap = self.map
 
-        self.__create(self.pointsList.getItems())
+    def setMap(self, index):
+        if self.routes is not None:
+            self.createMap(self.routes[index].points)
+            self.drawRoute(self.routes[index])
+
+    def setDefaultMap(self):
+        self.__setMap(self.defaultMap)
 
     def fetchPoints(self):
         points = self.pointsList.getItems()
-        self.__create(points)
+        self.createMap(points)
 
     def drawRoute(self, route):
         dirApi = DirectionsAPI(self.config)
@@ -65,7 +75,7 @@ class MapWidget(QWidget):
         ))
         folium.Marker((point.get_longitude(), point.get_latitude()), popup=popup).add_to(self.map)
 
-    def __create(self, points):
+    def createMap(self, points):
         self.map = folium.Map(doubleClickZoom=False)
         self.map.add_child(folium.LatLngPopup())
 
@@ -73,10 +83,7 @@ class MapWidget(QWidget):
             self.addMarker(point)
 
         self.__scale(points)
-
-        data = io.BytesIO()
-        self.map.save(data, close_file=False)
-        self.webView.setHtml(data.getvalue().decode())
+        self.__setMap(self.map)
 
     def __scale(self, points):
         df = pd.DataFrame([(float(point.get_longitude()), float(point.get_latitude())) for point in points])
@@ -88,3 +95,8 @@ class MapWidget(QWidget):
             ne = [ne[0] + 0.0005, ne[1] + 0.0005]
 
         self.map.fit_bounds([sw, ne])
+
+    def __setMap(self, m):
+        data = io.BytesIO()
+        m.save(data, close_file=False)
+        self.webView.setHtml(data.getvalue().decode())
