@@ -38,7 +38,7 @@ class MapWidget(QWidget):
         for i in range(len(route.points) - 1):
             requestPoints = (route.points[i], route.points[i + 1])
             coordinates = dirApi.get_result(requestPoints)
-            folium.PolyLine(coordinates, color=route.courier.color, weight=6, #random.randint(1, 9),
+            folium.PolyLine(coordinates, color=route.courier.color, weight=6,  # random.randint(1, 9),
                             opacity=1).add_to(self.map)
 
         # save map data to data object
@@ -56,12 +56,21 @@ class MapWidget(QWidget):
         for r in self.routes:
             self.drawRoute(r)
 
+    def addMarker(self, point):
+        popup = folium.Popup(folium.Html(
+            """
+            <b>Name: </b> {} </br>
+            <b>Value: </b> {}
+            """.format(point.name, point.value), script=True
+        ))
+        folium.Marker((point.get_longitude(), point.get_latitude()), popup=popup).add_to(self.map)
+
     def __create(self, points):
-        self.map = folium.Map()
+        self.map = folium.Map(doubleClickZoom=False)
         self.map.add_child(folium.LatLngPopup())
 
         for point in points:
-            folium.Marker((point.get_longitude(), point.get_latitude())).add_to(self.map)
+            self.addMarker(point)
 
         self.__scale(points)
 
