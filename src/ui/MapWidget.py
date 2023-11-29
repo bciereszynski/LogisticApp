@@ -51,6 +51,11 @@ class MapWidget(QWidget):
             folium.PolyLine(coordinates, color=route.courier.color, weight=6,  # random.randint(1, 9),
                             opacity=1).add_to(self.map)
 
+        requestPoints = (route.points[-1], route.points[0])
+        coordinates = dirApi.get_result(requestPoints)
+        folium.PolyLine(coordinates, color=route.courier.color, weight=6,  # random.randint(1, 9),
+                        opacity=1).add_to(self.map)
+
         # save map data to data object
         data = io.BytesIO()
         self.map.save(data, close_file=False)
