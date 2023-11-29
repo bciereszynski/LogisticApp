@@ -54,7 +54,7 @@ class MatrixAPI(IApi):
         distancesMap = {}
         for i in range(len(points)):
             for j in range(len(points)):
-                distancesMap[(points[i], points[j])] = distancesMatrix[i][j]
+                distancesMap[(points[i].get_coordinates_str(), points[j].get_coordinates_str())] = distancesMatrix[i][j]
 
         self.requestsMap[points_coordinates] = distancesMap
         return distancesMap
