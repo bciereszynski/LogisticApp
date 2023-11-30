@@ -14,6 +14,7 @@ from src.data.repositories.CourierRepository import CouriersRepository
 from src.data.FileReader import FileReader
 from src.data.ItemsList import ItemsList
 from src.data.repositories.PointsRepository import PointsRepository
+from src.mail.sender import send_mail
 from src.ui.Editors import AddIntegerEditor
 from src.ui.dialogs.ConfigDialog import ConfigWindow
 from src.ui.dialogs.CourierDialog import CourierDialog
@@ -94,12 +95,23 @@ class MainWindow(QMainWindow):
         act.triggered.connect(self.showConfigEditor)
         self.editConfig = act
 
+        act = QAction("Send to currnent", self)
+        act.triggered.connect(self.sendToCurrent)
+        self.sendCurrentAct = act
+
+        act = QAction("Send to all", self)
+        self.sendAllAct = act
+
     def createMenus(self):
         dataMenu = self.menuBar().addMenu("Data")
         dataMenu.addAction(self.loadPointsFromFileAct)
 
         configMenu = self.menuBar().addMenu("Configuration")
         configMenu.addAction(self.editConfig)
+
+        mailMenu = self.menuBar().addMenu("Mail")
+        mailMenu.addAction(self.sendCurrentAct)
+        mailMenu.addAction(self.sendAllAct)
 
     def loadPointsFromFile(self):
         fileName = QFileDialog.getOpenFileName(self)
@@ -119,6 +131,25 @@ class MainWindow(QMainWindow):
     def showConfigEditor(self):
         configEditor = ConfigWindow(self.config)
         configEditor.exec()
+
+    def sendToCurrent(self):
+        index = self.couriersMenu.selectedIndex().row()
+        if index is None:
+            return
+        try:
+            with open("map.html", "w") as f:
+                f.write(self.mapWidget.getHtml())
+        except Exception:
+            self.__showErrorMsg("Error during file write")
+            return
+        send_mail(self.couriersList.getItem(index).email, "Your route", " ",
+                  self.config.mailLogin, self.config.mailPassword, "map.html")
+
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText("Mail send to " + self.couriersList.getItem(index).email)
+        msg.setWindowTitle("Success!")
+        msg.exec_()
 
     def generate(self):
         points = self.pointsList.getItems()

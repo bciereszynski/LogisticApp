@@ -57,9 +57,13 @@ class MapWidget(QWidget):
                         opacity=1).add_to(self.map)
 
         # save map data to data object
+        self.webView.setHtml(self.getHtml())
+
+    def getHtml(self):
+        assert self.map is not None
         data = io.BytesIO()
         self.map.save(data, close_file=False)
-        self.webView.setHtml(data.getvalue().decode())
+        return data.getvalue().decode()
 
     def update(self):
         msg = QMessageBox()
