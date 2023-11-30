@@ -77,7 +77,6 @@ class MainWindow(QMainWindow):
         tabsWidget.addTab(self.pointsMenu, "Points")
         tabsWidget.addTab(self.couriersMenu, "Couriers")
 
-        lay.addWidget(self.mapWidget, stretch=1)
         vLay.addWidget(self.mapWidget)
         lay.addLayout(vLay, stretch=1)
         lay.addWidget(tabsWidget, stretch=0)
@@ -110,12 +109,7 @@ class MainWindow(QMainWindow):
         try:
             points = FileReader.read_points(fileName[0])
         except Exception:
-            messageBox = QMessageBox()
-            messageBox.setText("Error occurred")
-            messageBox.setInformativeText("during file import")
-            messageBox.setIcon(QMessageBox.Warning)
-            messageBox.setWindowTitle("Error")
-            messageBox.exec()
+            self.__showErrorMsg("Error during file import")
             return
 
         for point in points:
@@ -149,3 +143,13 @@ class MainWindow(QMainWindow):
         self.valueDisplayLabel.setText(str(value))
         self.mapWidget.routes = routes
         self.mapWidget.update()
+
+    @staticmethod
+    def __showErrorMsg(msg):
+        msgBox = QMessageBox()
+        msgBox.setIcon(QMessageBox.Critical)
+        msgBox.setText("Error")
+        msgBox.setInformativeText(msg)
+        msgBox.setWindowTitle("Error")
+        msgBox.exec_()
+        return
