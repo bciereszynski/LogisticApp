@@ -1,4 +1,3 @@
-import random
 import uuid
 
 from src.api.MatrixAPI import MatrixAPI
@@ -22,7 +21,8 @@ from src.ui.dialogs.PointDialog import PointDialog
 
 class MainWindow(QMainWindow):
 
-    def construct(self, t_max, couriers, points, distances):
+    @staticmethod
+    def construct(t_max, couriers, points, distances):
         routes = []
         central: Point = points[0]
 
@@ -105,7 +105,7 @@ class MainWindow(QMainWindow):
 
         couriers = self.couriersList.getItems()
         t_max = 15230
-        routes = self.construct(t_max,couriers,points, distances_map)
+        routes = self.construct(t_max, couriers, points, distances_map)
 
         for r in routes:
             r.optimize()
