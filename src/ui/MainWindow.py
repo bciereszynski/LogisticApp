@@ -1,9 +1,11 @@
 import uuid
 
+from PyQt5.QtCore import Qt
+
 from src.api.MatrixAPI import MatrixAPI
 
 from PyQt5.QtWidgets import QPushButton, QMessageBox, QHBoxLayout, QAction, QFileDialog, QMainWindow, QWidget, \
-    QTabWidget, QVBoxLayout
+    QTabWidget, QVBoxLayout, QLabel
 
 from src.calc.algorithmTOP import runAlgorithm
 from src.common.Courier import Courier
@@ -12,6 +14,7 @@ from src.data.repositories.CourierRepository import CouriersRepository
 from src.data.FileReader import FileReader
 from src.data.ItemsList import ItemsList
 from src.data.repositories.PointsRepository import PointsRepository
+from src.ui.Editors import AddIntegerEditor
 from src.ui.dialogs.ConfigDialog import ConfigWindow
 from src.ui.dialogs.CourierDialog import CourierDialog
 from src.ui.ItemsMenu import ItemsMenu
@@ -37,6 +40,7 @@ class MainWindow(QMainWindow):
         lay = QHBoxLayout()
         widget = QWidget()
         widget.setLayout(lay)
+
         self.setCentralWidget(widget)
         self.createActions()
         self.createMenus()
@@ -50,21 +54,33 @@ class MainWindow(QMainWindow):
         self.couriersList.fetch()
         self.couriersMenu.itemSelectionChanged().connect(self.showCourierMap)
 
+        vLay = QVBoxLayout()
+        toolbarLay = QHBoxLayout()
+        toolbarLay.setAlignment(Qt.AlignRight)
+
+        tLabel, self.tmaxSpin = AddIntegerEditor(toolbarLay, "t_max (m)")
+        self.tmaxSpin.setMaximum(2147483647)
+        self.tmaxSpin.setValue(10000)
+        self.tmaxSpin.setMinimumWidth(50)
+        valueLabel = QLabel("Value:")
+        self.valueDisplayLabel = QLabel("...")
         generateBtn = QPushButton()
         generateBtn.setText("Generate")
         generateBtn.clicked.connect(self.generate)
+        toolbarLay.addWidget(valueLabel)
+        toolbarLay.addWidget(self.valueDisplayLabel)
+        toolbarLay.addWidget(generateBtn)
+
+        vLay.addLayout(toolbarLay)
 
         tabsWidget = QTabWidget()
         tabsWidget.addTab(self.pointsMenu, "Points")
         tabsWidget.addTab(self.couriersMenu, "Couriers")
 
         lay.addWidget(self.mapWidget, stretch=1)
+        vLay.addWidget(self.mapWidget)
+        lay.addLayout(vLay, stretch=1)
         lay.addWidget(tabsWidget, stretch=0)
-
-        btnLay = QVBoxLayout()
-        btnLay.addWidget(generateBtn)
-
-        lay.addLayout(btnLay)
 
     def showCourierMap(self, selectedItem, unselectedItem):
         index = self.couriersMenu.itemsWidget.row(selectedItem)
