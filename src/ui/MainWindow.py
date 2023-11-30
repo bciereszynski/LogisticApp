@@ -22,6 +22,73 @@ from src.ui.dialogs.PointDialog import PointDialog
 
 class MainWindow(QMainWindow):
 
+    def construct(self, t_max, couriers, points, distances):
+        routes = []
+        central: Point = points[0]
+
+        points = points.copy()
+        points.remove(central)
+        points_to_delegate = []
+        delegated_points = []
+
+        # filter out all location that cannot be reached
+        for p in points:
+            if (distances[(p.get_coordinates_str(), central.get_coordinates_str())] +
+                    distances[(central.get_coordinates_str(), p.get_coordinates_str())] <= t_max):
+                points_to_delegate.append(p)
+
+        if len(points_to_delegate) < len(couriers):
+            raise Exception("Unreal conditions")
+
+        # create starting routes
+        # find the furthest points
+        dest_point_distance = []
+        for dest_point in points_to_delegate:
+            dest_point_distance.append(
+                (dest_point, distances[(central.get_coordinates_str(), dest_point.get_coordinates_str())]))
+        dest_point_distance.sort(reverse=True, key=lambda item: item[1])
+
+        # create routes containing of one furthest point
+        for i in range(len(couriers)):
+            route = Route(central, distances)
+            route.courier = couriers[i]
+            routes.append(route)
+
+            dest_point = dest_point_distance[i][0]
+            route.add(dest_point)
+            points_to_delegate.remove(dest_point)
+            delegated_points.append((dest_point, route))
+
+        # insert points to routes using the cheapest cost method
+        for point in points_to_delegate.copy():
+            min_change = float('inf')
+            index = None
+            selected_route = None
+            for route in routes:
+                change, i = route.check_insert_change(point)
+                if min_change > change and change + route.get_length() <= t_max:
+                    min_change = change
+                    index = i
+                    selected_route = route
+                else:
+                    print(route.get_length())
+                    print(point.name)
+                    print(str(change) + '\n')
+            if index is not None:
+                selected_route.insert(point, index)
+                points_to_delegate.remove(point)
+
+        # #
+        # random method
+        #     while len(points_to_delegate) > 0:
+        #         rand_point = points_to_delegate[random.randint(0, len(points_to_delegate) - 1)]
+        #         if cost + distances[(rand_point, last)] + distances[(rand_point, central)] < t_max:
+        #             route.add(rand_point)
+        #             cost = cost + rand_point.calc_line_distance(last)
+        #             last = rand_point
+        #         points_to_delegate.remove(rand_point)
+        return routes
+
     def generate(self):
         points = self.pointsList.getItems()
         matrixApi = MatrixAPI(self.config)
@@ -37,25 +104,8 @@ class MainWindow(QMainWindow):
             return
 
         couriers = self.couriersList.getItems()
-        t_max = 10230
-        central: Point = points[0]
-        routes = []
-
-        for i in range(len(couriers)):
-            points_to_delegate = points.copy()
-            route = Route(central)
-            route.courier = couriers[i]
-            routes.append(route)
-            points_to_delegate.remove(central)
-            last = central
-            cost = 0
-            while len(points_to_delegate) > 0:
-                rand_point = points_to_delegate[random.randint(0, len(points_to_delegate) - 1)]
-                if cost + distances_map[(rand_point, last)] + distances_map[(rand_point, central)] < t_max:
-                    route.add(rand_point)
-                    cost = cost + rand_point.calc_line_distance(last)
-                    last = rand_point
-                points_to_delegate.remove(rand_point)
+        t_max = 15230
+        routes = self.construct(t_max,couriers,points, distances_map)
 
         for r in routes:
             r.optimize()
