@@ -78,9 +78,10 @@ class MainWindow(QMainWindow):
         tabsWidget.addTab(self.pointsMenu, "Points")
         tabsWidget.addTab(self.couriersMenu, "Couriers")
 
-        vLay.addWidget(self.mapWidget)
-        lay.addLayout(vLay, stretch=1)
-        lay.addWidget(tabsWidget, stretch=0)
+        vLay.addWidget(tabsWidget)
+        lay.addWidget(self.mapWidget, stretch=1)
+        lay.addLayout(vLay, stretch=0)
+
 
     def showCourierMap(self, selectedItem, unselectedItem):
         index = self.couriersMenu.itemsWidget.row(selectedItem)
