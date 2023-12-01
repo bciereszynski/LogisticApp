@@ -138,8 +138,6 @@ class MainWindow(QMainWindow):
             self.__showErrorMsg("Select courier first!")
             return
         index = self.couriersMenu.selectedIndex().row()
-        if index is None:
-            return
         try:
             with open("map.html", "w") as f:
                 f.write(self.mapWidget.getHtml())
