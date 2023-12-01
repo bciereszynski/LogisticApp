@@ -134,6 +134,9 @@ class MainWindow(QMainWindow):
         configEditor.exec()
 
     def sendToCurrent(self):
+        if self.couriersMenu.selectedIndex() is None:
+            self.__showErrorMsg("Select courier first!")
+            return
         index = self.couriersMenu.selectedIndex().row()
         if index is None:
             return
