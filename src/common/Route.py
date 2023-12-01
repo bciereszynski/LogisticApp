@@ -88,8 +88,8 @@ class Route:
         return change, index
 
     def insert(self, point, index):
-        self.points.insert(index, point)
         self.length += self.__calculateInsertChange(point, index)
+        self.points.insert(index, point)
 
     def calculateCenterOfGravity(self):
         sum_long = 0
