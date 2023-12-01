@@ -83,7 +83,7 @@ def construct(t_max, couriers, points, distances):
 def __findCentral(points):
     central = None
     for p in points:
-        if p.isCetrnal:
+        if p.isCentral:
             if central is not None:
                 raise Exception("There is more than 1 central")
             else:
