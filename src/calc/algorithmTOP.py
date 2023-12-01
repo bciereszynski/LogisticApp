@@ -25,7 +25,6 @@ def construct(t_max, couriers, points, distances):
 
     def removeUnreachablePoints(points_to_delegate):
         # filter out all location that cannot be reached
-        points_to_delegate.remove(central)
         for p in points_to_delegate.copy():
             if (distances[(p.get_coordinates_str(), central.get_coordinates_str())] +
                     distances[(central.get_coordinates_str(), p.get_coordinates_str())] > t_max):
@@ -35,6 +34,7 @@ def construct(t_max, couriers, points, distances):
 
     central: Point = __findCentral(points)
     points_to_delegate = points.copy()
+    points_to_delegate.remove(central)
 
     removeUnreachablePoints(points_to_delegate)
     routes = createStaringRoutes(points_to_delegate)
@@ -64,9 +64,14 @@ def construct(t_max, couriers, points, distances):
         routes.append(route)
 
     routes.sort(reverse=True, key=lambda x: x.get_value())
+    if len(routes) > len(couriers):
+        for r in routes[len(couriers):]:
+            points_to_delegate += r.points
+            points_to_delegate.remove(central)
     routes = routes[:len(couriers)]
     for i in range(len(couriers)):
         routes[i].courier = couriers[i]
+
     return routes, points_to_delegate
 
     # #
