@@ -67,7 +67,7 @@ def construct(t_max, couriers, points, distances):
     routes = routes[:len(couriers)]
     for i in range(len(couriers)):
         routes[i].courier = couriers[i]
-    return routes
+    return routes, points_to_delegate
 
     # #
     # random method
@@ -80,10 +80,33 @@ def construct(t_max, couriers, points, distances):
     #         points_to_delegate.remove(rand_point)
 
 
-def runAlgorithm(points, distances_map, t_max, couriers):
-    routes = construct(t_max, couriers, points, distances_map)
-
+def TSP(routes):
     for r in routes:
         r.optimize()
+
+def __calc_route_appropriateness(route, points):
+    route_appropriateness = []
+    cog = route.calculateCenterOfGravity()
+    for p in points:
+        appropriateness = pow(p.value / p.calc_line_distance(cog[0], cog[1]), 4)
+        route_appropriateness.append((p, appropriateness))
+    route_appropriateness.sort(key=lambda x: x[1], reverse=True)
+    return route_appropriateness
+
+def Insert(routes, points, t_max):
+    for r in routes:
+        route_appropriateness = __calc_route_appropriateness(r, points)
+        for app in route_appropriateness:
+            point = app[0]
+            change, index = r.check_insert_change(point)
+            if r.get_length() + change <= t_max:
+                r.insert(point, index)
+
+
+def runAlgorithm(points, distances_map, t_max, couriers):
+    routes, points_to_delegate = construct(t_max, couriers, points, distances_map)
+
+    TSP(routes)
+    Insert(routes, points_to_delegate, t_max)
 
     return routes

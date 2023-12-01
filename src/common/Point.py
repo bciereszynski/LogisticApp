@@ -28,10 +28,10 @@ class Point(Item):
     def get_name(self):
         return self.name
 
-    def calc_line_distance(self, point2):
+    def calc_line_distance(self, longitude, latitude):
         point1 = self
-        return round(math.sqrt((point1.longitude - point2.longitude) * (point1.longitude - point2.longitude) +
-                               (point1.latitude - point2.latitude) * (point1.latitude - point2.latitude))
+        return round(math.sqrt((point1.longitude - longitude) * (point1.longitude - longitude) +
+                               (point1.latitude - latitude) * (point1.latitude - latitude))
                      * self.__kilometersPerDegree, 3)
 
     def get_coordinates_str(self):
