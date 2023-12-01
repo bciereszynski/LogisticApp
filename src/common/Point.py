@@ -7,7 +7,8 @@ from src.common.Item import Item
 class Point(Item):
     __kilometersPerDegree = 73  # For Poland ... 111 for equator
 
-    def __init__(self, longitude: float, latitude: float, value: int, name: str, Id: uuid = None):
+    def __init__(self, longitude: float, latitude: float, value: int, name: str, isCentral: bool = False,
+                 Id: uuid = None):
         if Id is None:
             Id = uuid.uuid4()
         self.id = Id
@@ -15,6 +16,7 @@ class Point(Item):
         self.latitude = latitude
         self.value = value
         self.name = name
+        self.isCentral = isCentral
 
     def get_latitude(self):
         return self.latitude
@@ -41,4 +43,4 @@ class Point(Item):
         return self.name
 
     def getValues(self):
-        return [self.longitude, self.latitude, self.value, self.name, self.id]
+        return [self.longitude, self.latitude, self.value, self.name, self.isCentral, self.id]

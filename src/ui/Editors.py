@@ -15,6 +15,16 @@ def AddDecimalEditor(layout, name):
     return label, spin
 
 
+def AddBooleanEditor(layout, name):
+    label = QLabel(name)
+    check = QCheckBox()
+
+    layout.addWidget(label)
+    layout.addWidget(check)
+
+    return label, check
+
+
 def AddStringEditor(layout, name):
     label = QLabel(name)
     line = QLineEdit()

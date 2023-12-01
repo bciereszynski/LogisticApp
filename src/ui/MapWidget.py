@@ -82,7 +82,11 @@ class MapWidget(QWidget):
             <b>Value: </b> {}
             """.format(point.name, point.value), script=True
         ))
-        folium.Marker((point.get_longitude(), point.get_latitude()), popup=popup).add_to(self.map)
+        if point.isCentral:
+            icon = folium.Icon(color="red", icon="home")
+        else:
+            icon = None
+        folium.Marker((point.get_longitude(), point.get_latitude()), popup=popup, icon=icon).add_to(self.map)
 
     def createMap(self, points):
         self.map = folium.Map(doubleClickZoom=False)

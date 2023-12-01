@@ -33,7 +33,7 @@ def construct(t_max, couriers, points, distances):
         if len(points_to_delegate) < len(couriers):
             raise Exception("Unreal conditions")
 
-    central: Point = points[0]
+    central: Point = __findCentral(points)
     points_to_delegate = points.copy()
 
     removeUnreachablePoints(points_to_delegate)
@@ -79,6 +79,18 @@ def construct(t_max, couriers, points, distances):
     #             last = rand_point
     #         points_to_delegate.remove(rand_point)
 
+
+def __findCentral(points):
+    central = None
+    for p in points:
+        if p.isCetrnal:
+            if central is not None:
+                raise Exception("There is more than 1 central")
+            else:
+                central = p
+    if central is None:
+        raise Exception("There is no central")
+    return central
 
 def TSP(routes):
     for r in routes:

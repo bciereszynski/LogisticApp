@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Uuid, Numeric
+from sqlalchemy import Column, Integer, String, Uuid, Numeric, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -13,6 +13,7 @@ class Points(Base):
     latitude = Column(Numeric(15, 10))
     value = Column(Integer)
     name = Column(String(50))
+    isCentral = Column(Boolean, default=False)
 
 
 class Couriers(Base):
