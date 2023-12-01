@@ -15,3 +15,7 @@ class AppConfig:
 
     def setApiKey(self, key):
         self.apiKey = key
+
+    def ConnectionString(self):
+        return (self.databaseDriver + "://" + self.databaseLogin + ":" + self.databasePassword + "@" +
+                self.databaseAddress + ":" + self.databasePort + "/" + self.databaseName)

@@ -5,7 +5,6 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from Config import AppConfig
 from src.data.models import Base
 
 # this is the Alembic Config object, which provides
@@ -27,7 +26,7 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-config.set_main_option("sqlalchemy.url", AppConfig.ConnectionString)
+config.set_main_option("sqlalchemy.url", "mariadb+pymysql://root:@localhost:3306/logisticdb")
 
 
 def run_migrations_offline() -> None:
