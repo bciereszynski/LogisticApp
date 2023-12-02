@@ -7,6 +7,7 @@ from src.api.MatrixAPI import MatrixAPI
 from PyQt5.QtWidgets import QPushButton, QMessageBox, QHBoxLayout, QAction, QFileDialog, QMainWindow, QWidget, \
     QTabWidget, QVBoxLayout, QLabel
 
+from src.calc.AlgorithmConfig import AlgorithmConfig
 from src.calc.algorithmTOP import runAlgorithm
 from src.common.Courier import Courier
 from src.common.Point import Point
@@ -16,6 +17,7 @@ from src.data.ItemsList import ItemsList
 from src.data.repositories.PointsRepository import PointsRepository
 from src.mail.sender import send_mail
 from src.ui.Editors import AddIntegerEditor
+from src.ui.dialogs.AlgorithmConfigDialog import AlgorithmConfigWindow
 from src.ui.dialogs.ConfigDialog import ConfigWindow
 from src.ui.dialogs.CourierDialog import CourierDialog
 from src.ui.ItemsMenu import ItemsMenu
@@ -32,6 +34,7 @@ class MainWindow(QMainWindow):
         self.setMinimumSize(self.window_width, self.window_height)
 
         self.config = config
+        self.algConfig = AlgorithmConfig()
 
         pointsRepository = PointsRepository()
         self.pointsList = ItemsList(pointsRepository, Point)
@@ -103,6 +106,10 @@ class MainWindow(QMainWindow):
         act = QAction("Send to all", self)
         self.sendAllAct = act
 
+        act = QAction("Configure", self)
+        act.triggered.connect(self.showAlgorithmConfig)
+        self.configureAlgorithm = act
+
     def createMenus(self):
         dataMenu = self.menuBar().addMenu("Data")
         dataMenu.addAction(self.loadPointsFromFileAct)
@@ -113,6 +120,9 @@ class MainWindow(QMainWindow):
         mailMenu = self.menuBar().addMenu("Mail")
         mailMenu.addAction(self.sendCurrentAct)
         mailMenu.addAction(self.sendAllAct)
+
+        algorithmMenu = self.menuBar().addMenu("Algorithm")
+        algorithmMenu.addAction(self.configureAlgorithm)
 
     def loadPointsFromFile(self):
         fileName = QFileDialog.getOpenFileName(self)
@@ -128,6 +138,10 @@ class MainWindow(QMainWindow):
         for point in points:
             point.id = uuid.uuid3(point.id, point.name)
             self.pointsList.append(point)
+
+    def showAlgorithmConfig(self):
+        configEditor = AlgorithmConfigWindow(self.algConfig)
+        configEditor.exec()
 
     def showConfigEditor(self):
         configEditor = ConfigWindow(self.config)
@@ -166,7 +180,7 @@ class MainWindow(QMainWindow):
         t_max = self.tmaxSpin.value()
 
         try:
-            routes = runAlgorithm(points, distances_map, t_max, couriers)
+            routes = runAlgorithm(points, distances_map, t_max, couriers, self.algConfig)
         except Exception as ex:
             self.__showErrorMsg(str(ex))
             return

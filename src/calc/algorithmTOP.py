@@ -120,10 +120,13 @@ def Insert(routes, points, t_max):
                 r.insert(point, index)
 
 
-def runAlgorithm(points, distances_map, t_max, couriers):
+def runAlgorithm(points, distances_map, t_max, couriers, algConfig):
     routes, points_to_delegate = construct(t_max, couriers, points, distances_map)
 
-    TSP(routes)
-    Insert(routes, points_to_delegate, t_max)
+    if algConfig.TSP:
+        TSP(routes)
+
+    if algConfig.Insert:
+        Insert(routes, points_to_delegate, t_max)
 
     return routes
