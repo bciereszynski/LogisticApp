@@ -28,15 +28,11 @@ class MapWidget(QWidget):
         self.pointsList.listChanged.connect(self.fetchPoints)
 
         self.createMap(self.pointsList.getItems())
-        self.defaultMap = self.map
 
     def setMap(self, index):
         if self.routes is not None:
             self.createMap(self.routes[index].points)
             self.drawRoute(self.routes[index])
-
-    def setDefaultMap(self):
-        self.__setMap(self.defaultMap)
 
     def fetchPoints(self):
         points = self.pointsList.getItems()
@@ -71,6 +67,8 @@ class MapWidget(QWidget):
         msg.setText('This action may take a while')
         msg.setWindowTitle("Wait...")
         msg.exec_()
+
+        self.createMap(self.pointsList.getItems())
 
         for r in self.routes:
             self.drawRoute(r)
