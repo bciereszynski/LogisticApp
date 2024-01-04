@@ -48,10 +48,10 @@ class Route:
                                     self.__get_distance(self.points[(i + 1) % n], self.points[(j + 1) % n]))
 
                     # two direction change
-                    if lengthChange < -0.000000000001:
-                        for x in range(i + 1, j + 1):
-                            lengthChange -= self.__get_distance(self.points[x], self.points[(x + 1) % len(self.points)])
-                            lengthChange += self.__get_distance(self.points[(x + 1) % len(self.points)], self.points[x])
+
+                    for x in range(i + 1, j):
+                        lengthChange -= self.__get_distance(self.points[x], self.points[(x + 1) % len(self.points)])
+                        lengthChange += self.__get_distance(self.points[(x + 1) % len(self.points)], self.points[x])
                     ###
 
                     if lengthChange < -0.000000000001:  # bcs float!!

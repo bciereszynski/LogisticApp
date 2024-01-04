@@ -33,6 +33,15 @@ def optimizeBasicTest():
     route.optimize()
     assert route.get_length() == 40
 
+
+def __calc_length(self):
+    length = 0
+    for i in range(len(self.points)):
+        pair = (self.points[i].get_coordinates_str(), self.points[(i+1)%len(self.points)].get_coordinates_str())
+        length += self.distances[pair]
+    return length
+
+
 def optimizeDifferentValuesTest():
     # given
     central = Point(10, 10, 0, "a")
@@ -62,7 +71,7 @@ def optimizeDifferentValuesTest():
     # assert
     assert route.get_length() == 52
     route.optimize()
-    assert route.get_length() == 38, str(route.get_length())
+    assert route.get_length() == __calc_length(route) == 38, str(route.get_length()) + " " + str(__calc_length(route))
 
 
 optimizeBasicTest()
