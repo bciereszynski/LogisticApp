@@ -1,3 +1,5 @@
+import copy
+
 from src.api.MatrixAPI import MatrixAPI
 from src.common.Point import Point
 from src.common.Route import Route
@@ -121,6 +123,32 @@ def Insert(routes, points, t_max):
                 points.remove(point)
 
 
+def Replace(routes, points, t_max):
+    def tryReplace(route, addPoint):
+        value = addPoint.get_value()
+        pointsList = route.get_points()
+        excludePoints = list(filter(lambda x: x.get_value() < value, pointsList))
+        excludePoints.sort(key=lambda x: x.get_value(), reverse=False)
+        for point in excludePoints:
+            rmIndex = route.points.index(point)
+            tryRoute = copy.deepcopy(route)
+            tryRoute.remove(rmIndex)
+            change, index = tryRoute.check_insert_change(addPoint)
+            if tryRoute.get_length() + change <= t_max:
+                r.remove(rmIndex)
+                r.insert(addPoint, index)
+                points.remove(addPoint)
+                points.append(point)
+                break
+
+    for r in routes:
+        route_appropriateness = __calc_route_appropriateness(r, points)
+        for app in route_appropriateness:
+            point = app[0]
+            tryReplace(r, point)
+
+
+
 def runAlgorithm(points, distances_map, t_max, couriers, algConfig):
     routes, points_to_delegate = construct(t_max, couriers, points, distances_map)
 
@@ -129,5 +157,8 @@ def runAlgorithm(points, distances_map, t_max, couriers, algConfig):
 
     if algConfig.Insert:
         Insert(routes, points_to_delegate, t_max)
+
+    if algConfig.Replace:
+        Replace(routes, points_to_delegate, t_max)
 
     return routes

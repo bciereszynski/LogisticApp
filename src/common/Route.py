@@ -1,3 +1,5 @@
+from copy import copy
+
 from src.common.Courier import Courier
 from src.common.Point import Point
 
@@ -5,14 +7,19 @@ from src.common.Point import Point
 class Route:
     def __init__(self, central: Point, distances):
         self.points: list[Point] = [central]
+        self.central = central
         self.courier: Courier = None
         self.length = 0
         self.distances = distances
 
     def add(self, point: Point):
-        self.length += self.__calculateInsertChange(point, 0)
+        self.length += self.__calculate_insert_change(point, 0)
         self.points.append(point)
 
+    def get_points(self):
+        points = copy(self.points)
+        points.remove(self.central)
+        return points
     def get_length(self):
         return self.length
 
@@ -67,7 +74,7 @@ class Route:
             latitude.append(p.latitude)
         return longitude, latitude
 
-    def __calculateInsertChange(self, point, index):
+    def __calculate_insert_change(self, point, index):
         n = len(self.points)
         if index == 0:
             index = n
@@ -81,15 +88,31 @@ class Route:
         change = float('inf')
         index = None
         for i in range(1, n + 1):
-            localChange = self.__calculateInsertChange(point, i)
+            localChange = self.__calculate_insert_change(point, i)
             if localChange < change:
                 change = localChange
                 index = i
         return change, index
 
+    def __check_remove_change(self, point):
+        if not self.points.count(point):
+            raise Exception("Route doesnt contain that point")
+        n = len(self.points)
+        index = self.points.index(point)
+        if index == 0:
+            index = n
+        change = (self.__get_distance(self.points[index - 1], self.points[(index + 1) % n]) -
+                  self.__get_distance(self.points[index - 1], point) -
+                  self.__get_distance(point, self.points[(index + 1) % n]))
+        return change
+
     def insert(self, point, index):
-        self.length += self.__calculateInsertChange(point, index)
+        self.length += self.__calculate_insert_change(point, index)
         self.points.insert(index, point)
+
+    def remove(self, index):
+        self.length += self.__check_remove_change(self.points[index])
+        self.points.pop(index)
 
     def calculateCenterOfGravity(self):
         sum_long = 0
