@@ -170,11 +170,12 @@ class MainWindow(QMainWindow):
     def generate(self):
         points = self.pointsList.getItems()
         matrixApi = MatrixAPI(self.config)
-        try:
-            distances_map = matrixApi.get_result(points)
-        except Exception as ex:
-            self.__showErrorMsg(str(ex))
-            return
+        distances_map = matrixApi.get_result(points)
+        # try:
+        #     distances_map = matrixApi.get_result(points)
+        # except Exception as ex:
+        #     self.__showErrorMsg(str(ex))
+        #     return
 
         couriers = self.couriersList.getItems()
         t_max = self.tmaxSpin.value()

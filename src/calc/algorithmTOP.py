@@ -118,6 +118,7 @@ def Insert(routes, points, t_max):
             change, index = r.check_insert_change(point)
             if r.get_length() + change <= t_max:
                 r.insert(point, index)
+                points.remove(point)
 
 
 def runAlgorithm(points, distances_map, t_max, couriers, algConfig):

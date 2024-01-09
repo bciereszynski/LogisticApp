@@ -15,4 +15,4 @@ class Courier(Item):
         return [self.name, self.surname, self.email, self.color, self.id]
 
     def __str__(self):
-        return self.name + " " + self.surname + self.color
+        return self.name + " " + self.surname
