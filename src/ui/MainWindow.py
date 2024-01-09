@@ -62,7 +62,7 @@ class MainWindow(QMainWindow):
         toolbarLay = QHBoxLayout()
         toolbarLay.setAlignment(Qt.AlignRight)
 
-        tLabel, self.tmaxSpin = AddIntegerEditor(toolbarLay, "t_max (m)")
+        tLabel, self.tmaxSpin = AddIntegerEditor(toolbarLay, "Max T (m)")
         self.tmaxSpin.setMaximum(2147483647)
         self.tmaxSpin.setValue(10000)
         self.tmaxSpin.setMinimumWidth(50)
