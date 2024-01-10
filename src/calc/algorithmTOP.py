@@ -147,18 +147,34 @@ def Replace(routes, points, t_max):
             point = app[0]
             tryReplace(r, point)
 
+def CalcSolutionValue(routes):
+    value = 0
+    for r in routes:
+        value += r.get_value()
+    return value
 
 
 def runAlgorithm(points, distances_map, t_max, couriers, algConfig):
+    max_local = 10
     routes, points_to_delegate = construct(t_max, couriers, points, distances_map)
+    improved = True
+    value = CalcSolutionValue(routes)
+    local_iter = 1
+    while improved and local_iter < max_local:
+        improved = False
+        if algConfig.TSP:
+            TSP(routes)
 
-    if algConfig.TSP:
-        TSP(routes)
+        if algConfig.Insert:
+            Insert(routes, points_to_delegate, t_max)
 
-    if algConfig.Insert:
-        Insert(routes, points_to_delegate, t_max)
+        if algConfig.Replace:
+            Replace(routes, points_to_delegate, t_max)
 
-    if algConfig.Replace:
-        Replace(routes, points_to_delegate, t_max)
-
+        newValue = CalcSolutionValue(routes)
+        if value < newValue:
+            value = newValue
+            improved = True
+        local_iter += 1
     return routes
+
