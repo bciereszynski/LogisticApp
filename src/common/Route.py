@@ -1,3 +1,4 @@
+import decimal
 from copy import copy
 
 from src.common.Courier import Courier
@@ -115,12 +116,13 @@ class Route:
         self.points.pop(index)
 
     def calculateCenterOfGravity(self):
-        sum_long = 0
-        sum_lat = 0
-        sum_value = 0
+        sum_long = decimal.Decimal(0.0)
+        sum_lat = decimal.Decimal(0.0)
+        sum_value = decimal.Decimal(0.0)
+
         for p in self.points:
-            sum_long += p.longitude * p.value
-            sum_lat += p.latitude * p.value
+            sum_long += decimal.Decimal(p.longitude * p.value)
+            sum_lat += decimal.Decimal(p.latitude * p.value)
             sum_value += p.value
 
         return sum_long/sum_value, sum_lat/sum_value
