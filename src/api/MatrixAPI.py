@@ -39,7 +39,6 @@ class MatrixAPI(IApi):
         points_coordinates = []
         for point in points:
             points_coordinates.append(point.get_coordinates_str())
-        points_coordinates.sort()
         points_coordinates = tuple(points_coordinates)
         distancesMap = self.requestsMap.get(points_coordinates)
         if distancesMap is not None:
