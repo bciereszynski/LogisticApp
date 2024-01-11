@@ -147,6 +147,25 @@ def Replace(routes, points, t_max):
             point = app[0]
             tryReplace(r, point)
 
+
+def Disrupt(routes, points):
+    removePercent = 0.3
+    routes.reverse()
+    for route in routes:
+        routePoints = route.get_points()
+        removeCount = round(len(routePoints) * removePercent)
+        if removeCount == len(routePoints):
+            removeCount -= 1
+        for i in range(1, removeCount+1):
+            rmPoint = routePoints[len(routePoints) - i]
+            rmIndex = route.points.index(rmPoint)
+            if rmIndex != len(routePoints) - i + 1:
+                print( rmIndex, len(routePoints) - i)
+                raise Exception("test")
+            route.remove(rmIndex)
+            points.append(rmPoint)
+
+
 def CalcSolutionValue(routes):
     value = 0
     for r in routes:
@@ -156,25 +175,43 @@ def CalcSolutionValue(routes):
 
 def runAlgorithm(points, distances_map, t_max, couriers, algConfig):
     max_local = 10
+    max_alg = 4
     routes, points_to_delegate = construct(t_max, couriers, points, distances_map)
-    improved = True
-    value = CalcSolutionValue(routes)
-    local_iter = 1
-    while improved and local_iter < max_local:
-        improved = False
-        if algConfig.TSP:
-            TSP(routes)
+    disrupted = False
+    checkpointSolution = None
+    alg_iter = 1
+    while alg_iter < max_alg:
+        local_iter = 1
+        improved = True
+        value = CalcSolutionValue(routes)
+        while improved and local_iter < max_local:
+            improved = False
+            if algConfig.TSP:
+                TSP(routes)
 
-        if algConfig.Insert:
-            Insert(routes, points_to_delegate, t_max)
+            if algConfig.Insert:
+                Insert(routes, points_to_delegate, t_max)
 
-        if algConfig.Replace:
-            Replace(routes, points_to_delegate, t_max)
+            if algConfig.Replace:
+                Replace(routes, points_to_delegate, t_max)
 
-        newValue = CalcSolutionValue(routes)
-        if value < newValue:
-            value = newValue
-            improved = True
-        local_iter += 1
-    return routes
+            newValue = CalcSolutionValue(routes)
+            if value < newValue:
+                value = newValue
+                improved = True
+
+            local_iter += 1
+        if not algConfig.Disrupt:
+            return routes
+        print(CalcSolutionValue(routes))
+        if checkpointSolution is None or CalcSolutionValue(checkpointSolution) < CalcSolutionValue(routes):
+            checkpointSolution = copy.deepcopy(routes)
+        elif CalcSolutionValue(checkpointSolution) == CalcSolutionValue(routes):
+            if not disrupted:
+                Disrupt(routes, points_to_delegate)
+                disrupted = True
+            else:
+                return checkpointSolution
+        alg_iter += 1
+    return checkpointSolution
 
