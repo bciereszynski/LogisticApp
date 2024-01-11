@@ -27,7 +27,7 @@ class Route:
     def get_value(self):
         value = 0
         for p in self.points:
-            value = value + p.value
+            value = value + p.get_value()
         return value
 
     # Function reverses fragment of the list in range [i+1,j] so t[i+1]=t[j] etc.
@@ -121,8 +121,8 @@ class Route:
         sum_value = decimal.Decimal(0.0)
 
         for p in self.points:
-            sum_long += decimal.Decimal(p.longitude * p.value)
-            sum_lat += decimal.Decimal(p.latitude * p.value)
-            sum_value += p.value
+            sum_long += decimal.Decimal(p.longitude * p.get_value())
+            sum_lat += decimal.Decimal(p.latitude * p.get_value())
+            sum_value += p.get_value()
 
         return sum_long/sum_value, sum_lat/sum_value

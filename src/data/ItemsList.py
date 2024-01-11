@@ -1,3 +1,5 @@
+import copy
+
 from PyQt5.QtCore import pyqtSignal, QObject
 
 
@@ -15,7 +17,7 @@ class ItemsList(QObject):
         self.listChanged.emit()
 
     def getItems(self):
-        return self.items
+        return copy.copy(self.items)
 
     def getItem(self, index):
         return self.items[index]

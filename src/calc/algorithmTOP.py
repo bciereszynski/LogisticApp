@@ -107,7 +107,7 @@ def __calc_route_appropriateness(route, points):
     route_appropriateness = []
     cog = route.calculateCenterOfGravity()
     for p in points:
-        appropriateness = pow(p.value / p.calc_line_distance(cog[0], cog[1]), 4)
+        appropriateness = pow(p.get_value() / p.calc_line_distance(cog[0], cog[1]), 4)
         route_appropriateness.append((p, appropriateness))
     route_appropriateness.sort(key=lambda x: x[1], reverse=True)
     return route_appropriateness

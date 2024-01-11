@@ -78,7 +78,7 @@ class MapWidget(QWidget):
             """
             <b>Name: </b> {} </br>
             <b>Value: </b> {}
-            """.format(point.name, point.value), script=True
+            """.format(point.name, point.get_value()), script=True
         ))
         if point.isCentral:
             icon = folium.Icon(color="red", icon="home")
