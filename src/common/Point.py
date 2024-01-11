@@ -14,7 +14,7 @@ class Point(Item):
         self.id = Id
         self.longitude = longitude
         self.latitude = latitude
-        self.__value = value
+        self.value = value
         self.name = name
         self.isCentral = isCentral
 
@@ -27,7 +27,7 @@ class Point(Item):
     def get_value(self):
         if self.isCentral:
             return 0
-        return self.__value
+        return self.value
 
     def get_name(self):
         return self.name
@@ -45,4 +45,4 @@ class Point(Item):
         return self.name
 
     def getValues(self):
-        return [self.longitude, self.latitude, self.__value, self.name, self.isCentral, self.id]
+        return [self.longitude, self.latitude, self.value, self.name, self.isCentral, self.id]
