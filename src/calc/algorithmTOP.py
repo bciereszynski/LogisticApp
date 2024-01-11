@@ -148,8 +148,7 @@ def Replace(routes, points, t_max):
             tryReplace(r, point)
 
 
-def Disrupt(routes, points):
-    removePercent = 0.3
+def Disrupt(routes, points, removePercent):
     routes.reverse()
     for route in routes:
         routePoints = route.get_points()
@@ -174,8 +173,8 @@ def CalcSolutionValue(routes):
 
 
 def runAlgorithm(points, distances_map, t_max, couriers, algConfig):
-    max_local = 10
-    max_alg = 4
+    max_local = algConfig.MaxLocalLoops
+    max_alg = algConfig.MaxAlgLoops
     routes, points_to_delegate = construct(t_max, couriers, points, distances_map)
     disrupted = False
     checkpointSolution = None
@@ -208,7 +207,7 @@ def runAlgorithm(points, distances_map, t_max, couriers, algConfig):
             checkpointSolution = copy.deepcopy(routes)
         elif CalcSolutionValue(checkpointSolution) == CalcSolutionValue(routes):
             if not disrupted:
-                Disrupt(routes, points_to_delegate)
+                Disrupt(routes, points_to_delegate, algConfig.DisruptPercent)
                 disrupted = True
             else:
                 return checkpointSolution
