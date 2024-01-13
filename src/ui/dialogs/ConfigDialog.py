@@ -93,5 +93,5 @@ class ConfigWindow(QDialog):
         self.close()
 
     def writeFile(self):
-        with open("config.cfg", "wb") as outfile:
+        with open("programData/config.cfg", "wb") as outfile:
             pickle.dump(self.config, outfile)
