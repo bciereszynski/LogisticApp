@@ -1,5 +1,6 @@
 import pickle
 
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QVBoxLayout, QLabel, QDialog, QComboBox, QHBoxLayout, QDialogButtonBox
 
@@ -12,7 +13,7 @@ class ConfigWindow(QDialog):
     def __init__(self, config: AppConfig):
         super().__init__()
         self.setWindowTitle("Configure")
-        self.setFixedSize(600, 300)
+        self.setFixedSize(600, 350)
 
         self.config = config
 
@@ -22,17 +23,19 @@ class ConfigWindow(QDialog):
 
         apiLay = QVBoxLayout()
         self.apiCombo = QComboBox()
-        self.apiCombo.addItem("RapidAPI")
+        self.apiCombo.addItem("TrueWayAPI")
         apiLay.addWidget(self.apiCombo)
         apiKeyLabel, self.apiKeyEditor = AddStringEditor(apiLay, "Api key")
         apiLay.setAlignment(Qt.AlignTop)
         optionalLay.addLayout(apiLay)
 
+        self.mailFrame = QtWidgets.QFrame()
         mailLay = QVBoxLayout()
         mailLoginLabel, self.mailLoginEditor = AddStringEditor(mailLay, "Mail login")
         mailPasswordLabel, self.mailPasswordEditor = AddPasswordEditor(mailLay, "Password")
         mailLay.setAlignment(Qt.AlignTop)
-        optionalLay.addLayout(mailLay)
+        self.mailFrame.setLayout(mailLay)
+        optionalLay.addWidget(self.mailFrame)
 
         lay.addLayout(optionalLay)
         lay.addSpacing(20)
@@ -42,7 +45,7 @@ class ConfigWindow(QDialog):
         databaseLay.addWidget(databaseLabel)
 
         self.databaseDriverEditor = QComboBox()
-        self.databaseDriverEditor.addItem("mariadb+pymysql")
+        self.databaseDriverEditor.addItem("mariadb")
         databaseLay.addWidget(self.databaseDriverEditor)
         databaseNameLabel, self.databaseNameEditor = AddStringEditor(databaseLay, "Name")
         databaseAddressLabel, self.databaseAddressEditor = AddStringEditor(databaseLay, "Address")
@@ -74,6 +77,8 @@ class ConfigWindow(QDialog):
             self.databasePasswordEditor.setText(self.config.databasePassword)
             self.mailLoginEditor.setText(self.config.mailLogin)
             self.mailPasswordEditor.setText(self.config.mailPassword)
+            if self.mailLoginEditor.text() != "":
+                self.mailFrame.setHidden(True)
         except (TypeError, AttributeError):
             pass
 

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QListWidget, QVBoxLayout, QWidget, QPushButton, QDialog
+from PyQt5.QtWidgets import QListWidget, QVBoxLayout, QWidget, QPushButton, QDialog, QMessageBox
 
 
 class ItemsMenu(QWidget):
@@ -55,6 +55,14 @@ class ItemsMenu(QWidget):
 
     def deleteBtnCommand(self):
         if len(self.itemsWidget.selectedIndexes()) == 0:
+            return
+
+        msgBox = QMessageBox()
+        msgBox.setIcon(QMessageBox.Question)
+        msgBox.setText("Are you sure u want to delere this item?")
+        msgBox.setWindowTitle("Delete")
+        msgBox.setStandardButtons( QMessageBox.Cancel|QMessageBox.Yes)
+        if msgBox.exec_() == QMessageBox.Cancel:
             return
         itemToDeleteRow = self.itemsWidget.selectedIndexes()[0].row()
         self.itemsList.remove(self.itemsList.getItem(itemToDeleteRow))
