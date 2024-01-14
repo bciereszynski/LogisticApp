@@ -45,7 +45,7 @@ class ConfigWindow(QDialog):
         databaseLay.addWidget(databaseLabel)
 
         self.databaseDriverEditor = QComboBox()
-        self.databaseDriverEditor.addItem("mariadb")
+        self.databaseDriverEditor.addItem("mariadb+pymysql")
         databaseLay.addWidget(self.databaseDriverEditor)
         databaseNameLabel, self.databaseNameEditor = AddStringEditor(databaseLay, "Name")
         databaseAddressLabel, self.databaseAddressEditor = AddStringEditor(databaseLay, "Address")

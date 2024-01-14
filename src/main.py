@@ -61,15 +61,14 @@ if __name__ == '__main__':
     while True:
         try:
             initDatabase(config)
-            window = MainWindow(config)
             break
-        except (SQLAlchemyError, TypeError):
+        except (SQLAlchemyError , TypeError):
             configWindow = ConfigWindow(config)
             configWindow.exec()
+            if configWindow.result() == QDialog.Rejected:
+                exit()
 
-        if configWindow.result() == QDialog.Rejected:
-            exit()
-
+    window = MainWindow(config)
     window.show()
 
     try:
