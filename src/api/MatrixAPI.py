@@ -1,5 +1,3 @@
-import copy
-
 import requests
 
 from src.AppConfig import AppConfig

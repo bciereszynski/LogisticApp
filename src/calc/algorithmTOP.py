@@ -1,6 +1,5 @@
 import copy
 
-from src.api.MatrixAPI import MatrixAPI
 from src.common.Point import Point
 from src.common.Route import Route
 
