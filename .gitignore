@@ -1,4 +1,6 @@
 myenv
 map.html
 programData
-old_req.txt
+build
+dist
+main.spec
