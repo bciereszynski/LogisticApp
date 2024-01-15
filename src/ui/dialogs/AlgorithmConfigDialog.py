@@ -38,7 +38,6 @@ class AlgorithmConfigWindow(QDialog):
         self.ReplaceCheck.setChecked(self.config.Replace)
         self.DisruptCheck.setChecked(self.config.Disrupt)
         self.AlgEditor.setValue(self.config.MaxAlgLoops)
-        print("test:" ,self.config.DisruptPercent,  self.config.DisruptPercent * 100)
         self.PercentEditor.setValue(round(self.config.DisruptPercent * 100))
 
     def save(self):

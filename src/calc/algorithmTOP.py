@@ -157,9 +157,6 @@ def Disrupt(routes, points, removePercent):
         for i in range(1, removeCount+1):
             rmPoint = routePoints[len(routePoints) - i]
             rmIndex = route.points.index(rmPoint)
-            if rmIndex != len(routePoints) - i + 1:
-                print( rmIndex, len(routePoints) - i)
-                raise Exception("test")
             route.remove(rmIndex)
             points.append(rmPoint)
 
@@ -201,7 +198,6 @@ def runAlgorithm(points, distances_map, t_max, couriers, algConfig):
             local_iter += 1
         if not algConfig.Disrupt:
             return routes
-        print(CalcSolutionValue(routes))
         if checkpointSolution is None or CalcSolutionValue(checkpointSolution) < CalcSolutionValue(routes):
             checkpointSolution = copy.deepcopy(routes)
         elif CalcSolutionValue(checkpointSolution) == CalcSolutionValue(routes):
