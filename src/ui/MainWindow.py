@@ -25,7 +25,6 @@ from src.ui.MapWidget import MapWidget
 from src.ui.dialogs.PointDialog import PointDialog
 from src.ui.dialogs.RouteDetailsDialog import RouteDetailsDialog
 
-
 class MainWindow(QMainWindow):
 
     def __init__(self, config):
@@ -86,6 +85,13 @@ class MainWindow(QMainWindow):
         lay.addWidget(self.mapWidget, stretch=1)
         lay.addLayout(vLay, stretch=0)
 
+    def __get_route_from_courier_id(self, index):
+        courier = self.couriersList.getItem(index)
+        routes = self.mapWidget.routes
+        route = [r for r in routes if r.courier == courier]
+        if len(route) != 1:
+            raise Exception("No route")
+        return route[0]
 
     def showCourierMap(self, selectedItem, unselectedItem):
         index = self.couriersMenu.itemsWidget.row(selectedItem)
@@ -164,7 +170,14 @@ class MainWindow(QMainWindow):
         except Exception:
             self.__showErrorMsg("Error during file write")
             return
-        send_mail(self.couriersList.getItem(index).email, "Your route", " ",
+        try:
+            route = self.__get_route_from_courier_id(index)
+        except Exception as ex:
+            self.__showErrorMsg(str(ex))
+            return
+        msg = RouteDetailsDialog.createDetails(route)
+
+        send_mail(self.couriersList.getItem(index).email, "Your route", msg,
                   self.config.mailLogin, self.config.mailPassword, "map.html")
 
         msg = QMessageBox()
@@ -178,12 +191,10 @@ class MainWindow(QMainWindow):
             self.__showErrorMsg("Select courier first!")
             return
         index = self.couriersMenu.selectedIndex().row()
-        courier = self.couriersList.getItem(index)
-        routes = self.mapWidget.routes
-        route = [r for r in routes if r.courier == courier]
-        if len(route) != 1:
+        try:
+            route = self.__get_route_from_courier_id(index)
+        except Exception:
             return
-        route = route[0]
         detailsDialog = RouteDetailsDialog(route)
         detailsDialog.exec()
 
