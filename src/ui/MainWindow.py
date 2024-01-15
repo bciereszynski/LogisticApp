@@ -23,6 +23,7 @@ from src.ui.dialogs.CourierDialog import CourierDialog
 from src.ui.ItemsMenu import ItemsMenu
 from src.ui.MapWidget import MapWidget
 from src.ui.dialogs.PointDialog import PointDialog
+from src.ui.dialogs.RouteDetailsDialog import RouteDetailsDialog
 
 
 class MainWindow(QMainWindow):
@@ -95,6 +96,10 @@ class MainWindow(QMainWindow):
         act.triggered.connect(self.loadPointsFromFile)
         self.loadPointsFromFileAct = act
 
+        act = QAction("Show route details", self)
+        act.triggered.connect(self.showCurrentRouteDetails)
+        self.showCurrentRouteDetailsAct = act
+
         act = QAction("Edit", self)
         act.triggered.connect(self.showConfigEditor)
         self.editConfig = act
@@ -113,6 +118,7 @@ class MainWindow(QMainWindow):
     def createMenus(self):
         dataMenu = self.menuBar().addMenu("Data")
         dataMenu.addAction(self.loadPointsFromFileAct)
+        dataMenu.addAction(self.showCurrentRouteDetailsAct)
 
         configMenu = self.menuBar().addMenu("Configuration")
         configMenu.addAction(self.editConfig)
@@ -166,6 +172,21 @@ class MainWindow(QMainWindow):
         msg.setText("Mail send to " + self.couriersList.getItem(index).email)
         msg.setWindowTitle("Success!")
         msg.exec_()
+
+    def showCurrentRouteDetails(self):
+        if self.couriersMenu.selectedIndex() is None:
+            self.__showErrorMsg("Select courier first!")
+            return
+        index = self.couriersMenu.selectedIndex().row()
+        courier = self.couriersList.getItem(index)
+        routes = self.mapWidget.routes
+        route = [r for r in routes if r.courier == courier]
+        if len(route) != 1:
+            return
+        route = route[0]
+        detailsDialog = RouteDetailsDialog(route)
+        detailsDialog.exec()
+
 
     def generate(self):
         points = self.pointsList.getItems()
