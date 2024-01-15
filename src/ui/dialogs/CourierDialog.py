@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QVBoxLayout, QLabel, QHBoxLayout
 
 from src.common.Courier import Courier
 from src.ui.Editors import AddStringEditor, ColorButton
@@ -13,8 +13,16 @@ class CourierDialog(ItemDialog):
         nameLabel, self.nameLine = AddStringEditor(self.lay, "Name")
         surnameLabel, self.surnameLine = AddStringEditor(self.lay, "Surname")
         emailLabel, self.emailLine = AddStringEditor(self.lay, "Email")
+
+        self.colorLay = QHBoxLayout()
+        colorLabel = QLabel("Color")
+        self.colorLay.addWidget(colorLabel)
         self.colorButton = ColorButton()
-        self.lay.addWidget(self.colorButton)
+        self.colorButton.setMaximumSize(25, 25)
+        self.colorLay.addWidget(self.colorButton, stretch=0)
+
+        self.lay.addLayout(self.colorLay, stretch=0)
+
         super().__init__(self.lay)
         self.setLayout(self.lay)
 

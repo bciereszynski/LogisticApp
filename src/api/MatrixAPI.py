@@ -46,6 +46,10 @@ class MatrixAPI(IApi):
 
         if response.status_code == 429:
             raise Exception("Daily limit exceeded")
+        if response.status_code == 403:
+            raise Exception("You are not subscribed to this api")
+        if response.status_code != 200:
+            raise Exception("Unexpected api error: " + str(response.status_code))
 
         distancesMatrix = response.json()['distances']
 
