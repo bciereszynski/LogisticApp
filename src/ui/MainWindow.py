@@ -88,14 +88,15 @@ class MainWindow(QMainWindow):
     def __get_route_from_courier_id(self, index):
         courier = self.couriersList.getItem(index)
         routes = self.mapWidget.routes
-        route = [r for r in routes if r.courier == courier]
+        route = [r for r in routes if r.courier.id == courier.id]
         if len(route) != 1:
             raise Exception("No route")
         return route[0]
 
     def showCourierMap(self, selectedItem, unselectedItem):
         index = self.couriersMenu.itemsWidget.row(selectedItem)
-        self.mapWidget.setMap(index)
+        route = self.__get_route_from_courier_id(index)
+        self.mapWidget.setMap(route)
 
     def createActions(self):
         act = QAction("Load points from file", self)

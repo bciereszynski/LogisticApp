@@ -29,10 +29,9 @@ class MapWidget(QWidget):
 
         self.createMap(self.pointsList.getItems())
 
-    def setMap(self, index):
-        if self.routes is not None:
-            self.createMap(self.routes[index].points)
-            self.drawRoute(self.routes[index])
+    def setMap(self, route):
+        self.createMap(route.points)
+        self.drawRoute(route)
 
     def fetchPoints(self):
         points = self.pointsList.getItems()
