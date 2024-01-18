@@ -61,11 +61,11 @@ class MapWidget(QWidget):
         return data.getvalue().decode()
 
     def update(self):
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Information)
-        msg.setText('This action may take a while')
-        msg.setWindowTitle("Wait...")
-        msg.exec_()
+        # msg = QMessageBox()
+        # msg.setIcon(QMessageBox.Information)
+        # msg.setText('This action may take a while')
+        # msg.setWindowTitle("Wait...")
+        # msg.exec_()
 
         self.createMap(self.pointsList.getItems())
 
