@@ -6,6 +6,7 @@ from src.common.Route import Route
 
 @staticmethod
 def construct(t_max, couriers, points, distances):
+    print(type(points[0]))
     def createStaringRoutes(points_to_delegate):
         routes = []
         dest_point_distance = []
