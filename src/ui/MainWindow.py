@@ -17,6 +17,7 @@ from src.data.ItemsList import ItemsList
 from src.data.repositories.PointsRepository import PointsRepository
 from src.mail.sender import send_mail
 from src.ui.Editors import AddIntegerEditor
+from src.ui.dialogs.AboutDialog import AboutDialog
 from src.ui.dialogs.AlgorithmConfigDialog import AlgorithmConfigWindow
 from src.ui.dialogs.ConfigDialog import ConfigWindow
 from src.ui.dialogs.CourierDialog import CourierDialog
@@ -107,6 +108,10 @@ class MainWindow(QMainWindow):
         act.triggered.connect(self.showCurrentRouteDetails)
         self.showCurrentRouteDetailsAct = act
 
+        act = QAction("About", self)
+        act.triggered.connect(self.showAboutDialog)
+        self.showAboutDialogAct = act
+
         act = QAction("Edit", self)
         act.triggered.connect(self.showConfigEditor)
         self.editConfig = act
@@ -126,6 +131,7 @@ class MainWindow(QMainWindow):
         dataMenu = self.menuBar().addMenu("Data")
         dataMenu.addAction(self.loadPointsFromFileAct)
         dataMenu.addAction(self.showCurrentRouteDetailsAct)
+        dataMenu.addAction(self.showAboutDialogAct)
 
         configMenu = self.menuBar().addMenu("Configuration")
         configMenu.addAction(self.editConfig)
@@ -151,6 +157,10 @@ class MainWindow(QMainWindow):
         for point in points:
             point.id = uuid.uuid3(point.id, point.name)
             self.pointsList.append(point)
+
+    def showAboutDialog(self):
+        aboutDialog = AboutDialog()
+        aboutDialog.exec()
 
     def showAlgorithmConfig(self):
         configEditor = AlgorithmConfigWindow(self.algConfig)
