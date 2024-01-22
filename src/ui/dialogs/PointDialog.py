@@ -36,8 +36,8 @@ class PointDialog(ItemDialog):
 
     def resetValues(self):
         self.nameLine.setText("")
-        self.longitudeSpin.setValue(0)
-        self.latitudeSpin.setValue(0)
+        self.longitudeSpin.setValue(53.1323)
+        self.latitudeSpin.setValue(23.1606)
         self.valueSpin.setValue(0)
         self.isCentralCheck.setChecked(False)
         self.id = None
