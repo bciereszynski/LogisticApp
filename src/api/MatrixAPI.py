@@ -35,13 +35,13 @@ class MatrixAPI(IApi):
 
     def get_result(self, points):
         points_coordinates = []
+        points.sort(key= lambda x: x.get_name())
         for point in points:
             points_coordinates.append(point.get_coordinates_str())
         points_coordinates = tuple(points_coordinates)
         distancesMap = self.requestsMap.get(points_coordinates)
         if distancesMap is not None:
             return distancesMap
-
         response = self.get_response(points_coordinates)
 
         if response.status_code == 429:

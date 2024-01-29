@@ -89,14 +89,19 @@ class MainWindow(QMainWindow):
     def __get_route_from_courier_id(self, index):
         courier = self.couriersList.getItem(index)
         routes = self.mapWidget.routes
+        if routes is None:
+            raise Exception("No route")
         route = [r for r in routes if r.courier.id == courier.id]
         if len(route) != 1:
-            raise Exception("No route")
+            raise Exception("Can't find route")
         return route[0]
 
     def showCourierMap(self, selectedItem, unselectedItem):
         index = self.couriersMenu.itemsWidget.row(selectedItem)
-        route = self.__get_route_from_courier_id(index)
+        try:
+            route = self.__get_route_from_courier_id(index)
+        except:
+            return
         self.mapWidget.setMap(route)
 
     def createActions(self):

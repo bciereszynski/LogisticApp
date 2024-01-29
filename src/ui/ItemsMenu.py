@@ -59,7 +59,7 @@ class ItemsMenu(QWidget):
 
         msgBox = QMessageBox()
         msgBox.setIcon(QMessageBox.Question)
-        msgBox.setText("Are you sure u want to delere this item?")
+        msgBox.setText("Are you sure u want to delete this item?")
         msgBox.setWindowTitle("Delete")
         msgBox.setStandardButtons( QMessageBox.Cancel|QMessageBox.Yes)
         if msgBox.exec_() == QMessageBox.Cancel:
